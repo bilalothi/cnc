@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+            http://www.springframework.org/schema/rabbit
+            http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:rabbitmq.properties</value>
+				<value>classpath:database.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<context:component-scan base-package="com.ugs.cnc" />
+
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<mvc:annotation-driven />
+
+	<mvc:view-controller path="/login" view-name="login" />
+
+	<mvc:view-controller path="/protected" view-name="protected" />
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	<bean id="hibernateExceptionTranslator"
+		class="org.springframework.orm.hibernate4.HibernateExceptionTranslator" />
+    
+	<!--A reference to the org.springframework.amqp.rabbit.connection.ConnectionFactory -->
+	<rabbit:connection-factory id="rabbitConnectionFactory"
+		host="${queue.consumer.hostname}" username="${queue.consumer.username}"
+		password="${queue.consumer.password}" port="${queue.consumer.port}" />
+
+	<!-- Creates a org.springframework.amqp.rabbit.core.RabbitTemplate for access 
+		to the broker -->
+	<!-- <rabbit:template id="template" connection-factory="rabbitConnectionFactory" 
+		exchange="amq.direct" queue="springQueue" routing-key="spring123" message-converter="jsonMessageConverter"/> -->
+
+	<rabbit:template id="template" connection-factory="rabbitConnectionFactory"
+		exchange="${queue.consumer.exchange}" queue="${queue.consumer.name}"
+		routing-key="${queue.consumer.routingkey}" />
+
+	<rabbit:direct-exchange name="${queue.consumer.exchange}">
+		<rabbit:bindings>
+			<rabbit:binding queue="consumerQueue" key="${queue.consumer.routingkey}" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<!--  <rabbit:template id="topic-template" connection-factory="rabbitConnectionFactory"
+		exchange="${queue.producer.exchange}" queue="${queue.producer.name}" />
+	<rabbit:topic-exchange name="${queue.producer.exchange}" durable="true" >
+    <rabbit:bindings>
+        <rabbit:binding queue="producerQueue" pattern="browser-clients"></rabbit:binding>
+    </rabbit:bindings>
+	</rabbit:topic-exchange> -->
+
+	<!-- Creates a org.springframework.amqp.rabbit.core.RabbitAdmin to manage 
+		exchanges, queues and bindings -->
+	<rabbit:admin connection-factory="rabbitConnectionFactory" />
+
+	<!-- <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"> 
+		<property name="classMapper"> <bean class="org.springframework.amqp.support.converter.DefaultClassMapper"> 
+		<property name="defaultType" value="com.ugs.cnc.entities.RawMessage" /> </bean> 
+		</property> </bean> -->
+
+	<!-- Creates a queue for consumers to retrieve messages -->
+	<rabbit:queue id="consumerQueue" name="${queue.consumer.name}" />
+
+    <!-- Creates a queue for producers to send messages 
+	<rabbit:queue id="producerQueue" name="${queue.producer.name}" />-->
+	
+	<rabbit:listener-container concurrency="${queue.consumer.concurrency}">
+		<rabbit:listener queues="${queue.consumer.name}" ref="messageListener" />
+	</rabbit:listener-container>
+
+	<bean id="messageProcessor" class="com.ugs.cnc.service.MessageProcessingService" />
+
+	<bean id="messageListener" class="com.ugs.cnc.service.MessageConsumer">
+		<property name="messageProcessingService">
+			<ref bean="messageProcessor" />
+		</property>
+	</bean>
+</beans>

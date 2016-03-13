@@ -1,0 +1,55 @@
+/* UGS Command and Control display css file 
+*/
+body {
+	margin: 0;
+	font-family: verdana;
+	line-height: 1.4em;
+	background:black;	
+	height:200px;
+}
+
+input {
+	display: block;
+	width: 300px;
+	margin: 3px 0px 20px 0px;
+	padding: 5px;
+}
+
+.footer {
+	border-top: 3px #ccc solid;	
+	
+	
+	
+}
+
+.footer .text {
+	float: right;
+	margin-right: 20px;
+    font-size: 12px;
+    color: #33FF99;
+    
+/*     background-image: url("images/pak_army_logo.png"); */
+/* 	background-repeat:  no-repeat; */
+/* 	background-position:right; */
+/* 	background-size: 300px 300px; */
+	
+}
+
+.box {
+    padding: 0px 20px 20px 30px;
+	background-color: #6965C6;
+/* 	background-image: url("images/pak_army_logo.png"); */
+/* 	background-repeat:  no-repeat; */
+/* 	background-position:center; */
+/* 	background-size: 390px 390px; */
+/* 	background-opacity:0.4; */
+	border: 1px solid #ccc;	font-family: verdana;	font-family: verdana;
+	width: 320px;
+	margin: 0 auto;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	color: #003300;	
+	font-size: 16px;
+	color: black;
+	
+}

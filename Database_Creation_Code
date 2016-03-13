@@ -1,0 +1,236 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+CREATE SCHEMA IF NOT EXISTS `C2I_DB` DEFAULT CHARACTER SET utf8 ;
+USE `C2I_DB` ;
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Alert`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Alert` (
+  `Alert_Id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `Alert_Type` VARCHAR(20) NULL DEFAULT NULL ,
+  `Alert_State` VARCHAR(20) NULL DEFAULT NULL ,
+  `Assigned_To` VARCHAR(45) NULL DEFAULT NULL ,
+  `Device_Id` VARCHAR(45) NULL DEFAULT NULL ,
+  `Alert_Received_Timestamp` DATETIME NULL DEFAULT NULL ,
+  `Alert_Accepted_Timestamp` DATETIME NULL DEFAULT NULL ,
+  `Alert_Assigned_Timestamp` DATETIME NULL DEFAULT NULL ,
+  `Alert_Resolved_Timestamp` DATETIME NULL DEFAULT NULL ,
+  `Assign_Comments` VARCHAR(500) NULL DEFAULT NULL ,
+  `Assigned_By` VARCHAR(45) NULL DEFAULT NULL ,
+  `Resolve_Comments` VARCHAR(500) NULL DEFAULT NULL ,
+  PRIMARY KEY (`Alert_Id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 13157
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Field_Network`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Field_Network` (
+  `Field_Network_Id` VARCHAR(45) NOT NULL ,
+  `Field_Network_Name` VARCHAR(40) NULL DEFAULT NULL ,
+  `Field_Network_Type` VARCHAR(15) NULL DEFAULT NULL ,
+  `Field_Network_Status` VARCHAR(15) NOT NULL ,
+  PRIMARY KEY (`Field_Network_Id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Device_Info`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Device_Info` (
+  `Device_Id` VARCHAR(45) NOT NULL ,
+  `Device_Type` VARCHAR(20) NOT NULL ,
+  `Device_Status` VARCHAR(15) NOT NULL ,
+  `Device_MAC_Address` VARCHAR(45) NULL DEFAULT NULL ,
+  `Network_Id` VARCHAR(45) NOT NULL ,
+  `Battery` INT(3) NULL DEFAULT NULL ,
+  `Sensitivity` INT(3) NULL DEFAULT NULL ,
+  `Link_Quality` INT(3) NULL DEFAULT NULL ,
+  `Primary_Router_Id` VARCHAR(45) NULL DEFAULT NULL ,
+  `Secondry_Router_Id` VARCHAR(45) NULL DEFAULT NULL ,
+  `Signal_Strength` INT(3) NULL DEFAULT NULL ,
+  `Video_Stream_Link` VARCHAR(200) NULL DEFAULT NULL ,
+  PRIMARY KEY (`Device_Id`) ,
+  INDEX `fk_Device_Info_1_idx` (`Network_Id` ASC) ,
+  CONSTRAINT `fk_device_network_id`
+    FOREIGN KEY (`Network_Id` )
+    REFERENCES `C2I_DB`.`Field_Network` (`Field_Network_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Device_Location`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Device_Location` (
+  `Device_Id` VARCHAR(45) NOT NULL ,
+  `Latitude` DOUBLE NOT NULL ,
+  `Longitude` DOUBLE NOT NULL ,
+  `Altitude` DOUBLE NOT NULL ,
+  PRIMARY KEY (`Device_Id`) ,
+  INDEX `fk_location_device_id_idx` (`Device_Id` ASC) ,
+  INDEX `fk_location_device_id_idx1` (`Device_Id` ASC) ,
+  CONSTRAINT `fk_location_device_id`
+    FOREIGN KEY (`Device_Id` )
+    REFERENCES `C2I_DB`.`Device_Info` (`Device_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Message_Log`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Message_Log` (
+  `Message_Id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `Message_Content` VARCHAR(250) NULL DEFAULT NULL ,
+  `Message_Type` VARCHAR(15) NOT NULL ,
+  `Message_Timestamp` DATETIME NOT NULL ,
+  `Device_Id` VARCHAR(45) NOT NULL ,
+  `Network_Id` VARCHAR(45) NOT NULL ,
+  `Device_Type` VARCHAR(45) NOT NULL ,
+  `Message_Raw_Data` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`Message_Id`) ,
+  INDEX `fk_device_id_idx` (`Device_Id` ASC) ,
+  INDEX `fk_message_network_id_idx` (`Network_Id` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 146939
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Message_Type`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Message_Type` (
+  `Key` INT(11) NOT NULL ,
+  `Type` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`Key`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Router_Node`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Router_Node` (
+  `Router_Node_Id` VARCHAR(45) NOT NULL ,
+  `Network_Id` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`Router_Node_Id`) ,
+  INDEX `fk_router_network_id_idx` (`Network_Id` ASC) ,
+  CONSTRAINT `fk_router_network_id`
+    FOREIGN KEY (`Network_Id` )
+    REFERENCES `C2I_DB`.`Field_Network` (`Field_Network_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Sensor_Node`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Sensor_Node` (
+  `Sensor_Node_Id` VARCHAR(45) NOT NULL ,
+  `Sensor_Node_Type` VARCHAR(15) NOT NULL ,
+  `Sensor_Node_Router_Id` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`Sensor_Node_Id`) ,
+  INDEX `fk_Sensor_Node_1_idx` (`Sensor_Node_Router_Id` ASC) ,
+  CONSTRAINT `fk_sensor_node_router_id`
+    FOREIGN KEY (`Sensor_Node_Router_Id` )
+    REFERENCES `C2I_DB`.`Router_Node` (`Router_Node_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`PIR_Sensor`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`PIR_Sensor` (
+  `PIR_Sensor_Id` VARCHAR(45) NOT NULL ,
+  `PIR_Sensor_Direction` VARCHAR(8) NULL DEFAULT NULL ,
+  `PIR_Sensor_Sensitivity` INT(5) NULL DEFAULT NULL ,
+  `PIR_Sensor_Node_Id` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`PIR_Sensor_Id`) ,
+  INDEX `fk_pir_sensor_node_id_idx` (`PIR_Sensor_Node_Id` ASC) ,
+  CONSTRAINT `fk_pir_sensor_node_id`
+    FOREIGN KEY (`PIR_Sensor_Node_Id` )
+    REFERENCES `C2I_DB`.`Sensor_Node` (`Sensor_Node_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`User`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`User` (
+  `User_Id` VARCHAR(45) NOT NULL ,
+  `First_Name` VARCHAR(20) NOT NULL ,
+  `Last_Name` VARCHAR(20) NOT NULL ,
+  `Password` VARCHAR(15) NOT NULL ,
+  `User_Status` VARCHAR(12) NOT NULL ,
+  `User_Role` VARCHAR(20) NOT NULL ,
+  PRIMARY KEY (`User_Id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`User_Log`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`User_Log` (
+  `User_Log_Id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `User_Log_Message_Type` VARCHAR(10) NOT NULL ,
+  `User_Log_Message` VARCHAR(120) NOT NULL ,
+  `User_Log_Message_Timestamp` DATETIME NOT NULL ,
+  `User_Id` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`User_Log_Id`) ,
+  INDEX `fk_log_user_id_idx` (`User_Id` ASC) ,
+  CONSTRAINT `fk_log_user_id`
+    FOREIGN KEY (`User_Id` )
+    REFERENCES `C2I_DB`.`User` (`User_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `C2I_DB`.`Video_Camera_Node`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `C2I_DB`.`Video_Camera_Node` (
+  `Video_Camera_Node_Id` VARCHAR(45) NOT NULL ,
+  `Video_Resolution` VARCHAR(10) NULL DEFAULT NULL ,
+  `Video_Camera_Network_Id` VARCHAR(45) NOT NULL ,
+  `Video_Stream_Link` VARCHAR(200) NOT NULL ,
+  PRIMARY KEY (`Video_Camera_Node_Id`) ,
+  INDEX `fk_video_camera_network_id_idx` (`Video_Camera_Network_Id` ASC) ,
+  INDEX `fk_video_camera_node_id_idx` (`Video_Camera_Node_Id` ASC) ,
+  CONSTRAINT `fk_video_camera_network_id`
+    FOREIGN KEY (`Video_Camera_Network_Id` )
+    REFERENCES `C2I_DB`.`Field_Network` (`Field_Network_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_video_camera_node_id`
+    FOREIGN KEY (`Video_Camera_Node_Id` )
+    REFERENCES `C2I_DB`.`Device_Info` (`Device_Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
