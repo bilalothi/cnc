@@ -238,7 +238,7 @@
                     <div id="device-tab">
                         <div id="device-side-tabs">
                             <ul>
-                                <!--<li><a href="#add-network-tab" style="outline: 0;"><span>Add Network</span></a></li>-->
+                                <li><a href="#add-network-tab" style="outline: 0;"><span>Add Network</span></a></li>
                                 <li><a href="#add-device-tab" style="outline: 0;"><span>Add Device</span></a></li>
                                 <li><a href="#search-device-tab" style="outline: 0;"><span>Search Device</span></a></li>
                                 <li><a href="#delete-device-tab" style="outline: 0;"><span>Delete
@@ -246,31 +246,29 @@
                                 <!--<li><a href="#config-device-tab" style="outline: 0;"><span>Config Device</span></a></li>-->
                             </ul>
 
-                            <!--                            <div id="add-network-tab">
-                                                            <div id="create-network-div" class="box">
-                                                                <br> <br>
-                                                                <form id="networkAddForm" method="post" class="forms">
-                                                                    <label for="networkId">Network Id &nbsp;&nbsp;&nbsp;&nbsp;</label> 
-                                                                    <input type="text" id="networkId" name="networkId" value="" /><br> 
-                                                                    <label for="networkName">Network Name </label> 
-                                                                    <input type="text" id="networkName" name="networkName" value="" /><br> 
-                                                                    <label for="networkType">Network Type &nbsp;&nbsp;</label>
-                                                                    <select name="networkType" id="networkType"> 
-                                                                        <option value="SENSOR_NETWORK">SENSOR NETWORK</option>
-                                                                        <option value="CAMERA_NETWORK">CAMERA NETWORK</option>
-                                                                    </select><br> 
-                                                                    <label for="networkStatus">Network Status </label> 
-                                                                    <select id="networkStatus" name="networkStatus" id="userStatus">
-                                                                        <option value="ACTIVE">UP</option>
-                                                                        <option value="DEACTIVATED">DOWN</option>
-                                                                    </select>
-                                                                    <center>
-                                                                        <input type="button" id="saveNetworkButton" value="Save Network" />
-                                                                    </center>
-                                                                </form>
-                                                            </div>
-                                                            <div id="create-network-result-div" class="result"></div>
-                                                        </div>-->
+                            <div id="add-network-tab">
+                                <div id="create-network-div" class="search">
+                                    <br> <br>
+                                    <form id="networkAddForm" method="post" class="forms">
+                                        <label for="networkId">Network Id &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> 
+                                        <input type="text" id="networkId" name="networkId" value="" /><br> 
+                                        <label for="networkName">Network Name &nbsp;&nbsp;</label> 
+                                        <input type="text" id="networkName" name="networkName" value="" /><br> 
+                                        <label for="networkType">Network Type &nbsp;&nbsp;&nbsp;</label>
+                                        <select name="networkType" id="networkType"> 
+                                            <option value="SENSOR_NETWORK">SENSOR NETWORK</option>
+                                        </select><br> 
+                                        <label for="networkStatus">Network Status &nbsp;</label> 
+                                        <select id="networkStatus" name="networkStatus" id="userStatus">
+                                            <option value="ACTIVE">UP</option>
+                                        </select>
+                                        <center>
+                                            <input type="button" id="saveNetworkButton" value="Save Network" />
+                                        </center>
+                                    </form>
+                                </div>
+                                <div id="create-network-result-div" class="result"></div>
+                            </div>
 
 
                             <div id="add-device-tab" class="forms">
@@ -301,9 +299,9 @@
 
                                 <div id="device-search-div" class="search">
                                     <br> <br> <label for="deviceIdSearchTextField">Device Id &nbsp;&nbsp;&nbsp;</label><input type="text" id="deviceIdSearchTextField"
-                                                      name="deviceIdSearchTextField" value="" /> <input type="button"
-                                                      id="searchDeviceByIdButton" value="Search By Id" style="width: 200px;" /><br> <label
-                                                      for="deviceNetworkSearchDropdown">Network
+                                                                                                                              name="deviceIdSearchTextField" value="" /> <input type="button"
+                                                                                                                              id="searchDeviceByIdButton" value="Search By Id" style="width: 200px;" /><br> <label
+                                                                                                                              for="deviceNetworkSearchDropdown">Network
                                         &nbsp;&nbsp;&nbsp;</label> 
                                     <select name="deviceNetworkSearchDropdown" id="deviceNetworkSearchDropdown">
                                     </select> 
@@ -510,14 +508,14 @@
                                 <div class="forms">
                                     <br> <label for="messageSearchByIdTextField">Device Id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> 
                                     <input type="text" id="messageSearchByIdTextField"
-                                                      name="messageSearchByIdTextField" value=""> <input
-                                                      type="button" id="searchMessagesByDeviceIdButton"
-                                                      value="Search by Id" />
+                                           name="messageSearchByIdTextField" value=""> <input
+                                           type="button" id="searchMessagesByDeviceIdButton"
+                                           value="Search by Id" />
                                 </div>
                             </div>
                             <div id="search-message-result-div" class="result-message"></div>
                         </div>
-                        
+
                         <!-- 						</div> -->
                     </div>
 
