@@ -6,7 +6,7 @@
 
 var cncEvents = function () {
 
-    // Private methods and properties
+// Private methods and properties
     var IsSearchById = false;
     var requestTypePost = "POST";
     var requestTypeGet = "GET";
@@ -22,18 +22,15 @@ var cncEvents = function () {
     var resolveOperation = "RESOLVE";
     var textfield = "TEXTFIELD";
     var dropdown = "DROPDOWN";
-
     // Dropdown and text field population functions
     function populateNetworkDropdown() {
 
         var requestUrl = "/cnc/network/getAllNetworks";
         var sendData = {};
-
         $("#deviceNetworkSearchDropdown").append($("<option>", {
             text: "Select a network",
             value: ""
         }));
-
         cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet,
                 receiveTypeJson, function (response, status, error) {
                     $.each(response.networks, function (index, value) {
@@ -50,12 +47,10 @@ var cncEvents = function () {
 
         var requestUrl = "/cnc/device/getVideoCameras";
         var sendData = {};
-
         $("#videoCameraDropdown").append($("<option>", {
             text: "Select a video camera",
             value: ""
         }));
-
         cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet,
                 receiveTypeJson, function (response, status, error) {
                     $.each(response.devices, function (index, value) {
@@ -72,7 +67,6 @@ var cncEvents = function () {
         var requestUrl = "/cnc/user/getAllUsers";
         var sendData = {};
         var dropdownToPopulate;
-
         if (dropdown == "update") {
             dropdownToPopulate = "#updateUserId";
         } else if (dropdown == "delete") {
@@ -83,7 +77,6 @@ var cncEvents = function () {
             text: "Select a username",
             value: ""
         }));
-
         cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet,
                 receiveTypeJson, function (response, status, error) {
                     $.each(response.users, function (index, value) {
@@ -138,7 +131,6 @@ var cncEvents = function () {
                         $("#assignedAlertDeviceId option").css(
                                 "background-color", "yellow");
                     });
-
         } else {
             $("#alert-resolve-result-div").addClass("partial-success")
             $("#alert-resolve-result-div").html(
@@ -153,16 +145,13 @@ var cncEvents = function () {
             text: "Select a user",
             value: ""
         }));
-
         $.each(result.users, function (index, value) {
 
             var fullName = value.firstName + " " + value.lastName;
-
             $("#assignedTo").append($("<option>", {
                 text: fullName,
                 value: value.userId
             }));
-
         });
     }
 
@@ -184,10 +173,8 @@ var cncEvents = function () {
         var message;
         if (fieldType == "DROPDOWN") {
             message = "Please select a value from the dropdown to perform the required operation";
-
         } else if (fieldType == "TEXTFIELD") {
             message = "Please enter a value in the required text field to perform the required operation";
-
         }
 
         $(resultDiv).addClass("error");
@@ -202,7 +189,6 @@ var cncEvents = function () {
                 + value.deviceBattery + "</td><td>" + value.deviceSensitivity
                 + "</td><td>" + value.deviceLinkQualityIndicator + "</td><td>"
                 + value.deviceSignalStrength + "</td></tr>";
-
         return search_device_result_html;
     }
 
@@ -212,15 +198,18 @@ var cncEvents = function () {
                 + value.firstName + "</td><td>" + value.lastName + "</td><td>"
                 + value.userRole + "</td><td>" + value.userStatus
                 + "</td></tr>";
-
         return search_user_result_html;
+    }
+
+    function populateNetworkSearchResultTable(value, search_network_result_html) {
+        search_network_result_html += "<tr><td>" + value.networkName + "</td><td>" + value.networkId + "</td></tr>";
+        return search_network_result_html;
     }
 
     // Functions to display AJAX Request results
     function getSuccessMessage(operation) {
 
         var resultMessage = null;
-
         switch (operation) {
 
             case "SAVE":
@@ -229,31 +218,24 @@ var cncEvents = function () {
             case "DELETE":
                 resultMessage = "Delete operation successful";
                 break;
-
             case "UPDATE":
                 resultMessage = "Update operation successful";
                 break;
-
             case "SEARCH":
                 resultMessage = "Search successful";
                 break;
-
             case "CONFIG":
                 resultMessage = "Configuration successful";
                 break;
-
             case "ACCEPT":
                 resultMessage = "Alerts accepted.";
                 break;
-
             case "ASSIGN":
                 resultMessage = "Alerts assigned.";
                 break;
-
             case "RESOLVE":
                 resultMessage = "Alerts resolved.";
                 break;
-
             default:
                 resultMessage = "Operation successfully performed!!";
         } // End switch
@@ -264,7 +246,6 @@ var cncEvents = function () {
     function getFailureMessage(operation) {
 
         var resultMessage = null;
-
         switch (operation) {
 
             case "SAVE":
@@ -273,31 +254,24 @@ var cncEvents = function () {
             case "DELETE":
                 resultMessage = "Delete operation unsuccessful. Id does not exist.";
                 break;
-
             case "UPDATE":
                 resultMessage = "Update operation unsuccessful. Id does not exist.";
                 break;
-
             case "SEARCH":
                 resultMessage = "No records found.";
                 break;
-
             case "CONFIG":
                 resultMessage = "Configuration unsuccessful. Id does not exist.";
                 break;
-
             case "ACCEPT":
                 resultMessage = "Alerts could not be accepted.";
                 break;
-
             case "ASSIGN":
                 resultMessage = "Alerts could not be assigned.";
                 break;
-
             case "RESOLVE":
                 resultMessage = "Alerts could not be resolved.";
                 break;
-
             default:
                 resultMessage = "Operation unsuccessfull!!";
         }// End switch
@@ -308,13 +282,12 @@ var cncEvents = function () {
 
         $("#search-device-result-div").removeClass("partial-success");
         $("#search-device-result-div").removeClass("error");
-
         if (result.found == true) {
-            var search_device_result_html = "<table summary='DEVICE SEARCH RESULTS'><caption>DEVICE SEARCH RESULTS</caption><thead><tr><th scope='col'>DEVICE ID</th><th scope='col'>NETWORK</th><th scope='col'>STATUS</th><th scope='col'>TYPE</th><th scope='col'>BATTERY</th><th scope='col'>SENSITIVITY</th><th scope='col'>LINK QUALITY</th><th scope='col'>SIGNAL STRENGTH</th></tr></thead><tbody>";
+            var search_device_result_html = "<table class='FL wow flipInY animated' data-wow-duration='500ms' width='99%;' summary='DEVICE SEARCH RESULTS'><caption>DEVICE SEARCH RESULTS</caption><thead><tr><th scope='col'>DEVICE ID</th><th scope='col'>NETWORK</th><th scope='col'>STATUS</th><th scope='col'>TYPE</th><th scope='col'>BATTERY</th><th scope='col'>SENSITIVITY</th><th scope='col'>LINK QUALITY</th><th scope='col'>SIGNAL STRENGTH</th></tr></thead><tbody>";
             if (IsSearchById == true) {
-                search_device_result_html = populateDeviceSearchResultTable(
-                        result.device, search_device_result_html);
-            } else {
+                search_device_result_html = populateDeviceSearchResultTable(result.device, search_device_result_html);
+            }
+            else {
                 $
                         .each(
                                 result.devices,
@@ -324,7 +297,6 @@ var cncEvents = function () {
                                 });
             }
             search_device_result_html += "</tbody></table>";
-
             $("#search-device-result-div").html(search_device_result_html);
         }
 
@@ -334,6 +306,31 @@ var cncEvents = function () {
         // Re-setting IsSearchById to false after
         // displaying the results
         IsSearchById = false;
+    }
+
+    function getNetworkSearchResult(result) {
+        $("#search-network-result-div").removeClass("partial-success");
+        $("#search-network-result-div").removeClass("error");
+
+
+        if (result != null) {
+            var search_network_result_html = "<table class='FL wow flipInY animated' data-wow-duration='500ms' width='99%;' summary='NETWORK SEARCH RESULTS'><caption>NETWORK SEARCH RESULTS</caption><thead><tr><th scope='col'>NETWORK NAME</th><th scope='col'>NETWORK ID</th></tr></thead><tbody>";
+            $
+                    .each(
+                            result.networks,
+                            function (index, value) {
+                                search_network_result_html = populateNetworkSearchResultTable(value, search_network_result_html);
+                            });
+
+            search_network_result_html += "</tbody></table>";
+            $("#search-network-result-div").html(search_network_result_html);
+        }
+
+        else {
+            $("#search-network-result-div").html("No Network found!!!");
+        }
+
+
 
     }
 
@@ -342,7 +339,7 @@ var cncEvents = function () {
         $("#search-user-result-div").removeClass("partial-success");
         $("#search-user-result-div").removeClass("error");
         console.log("inside user search");
-        var search_user_result_html = "<table summary='USER SEARCH RESULTS'><caption>USER SEARCH RESULTS</caption><thead><tr><th scope='col'>USER NAME</th><th scope='col'>FIRST NAME</th><th scope='col'>LAST NAME</th><th scope='col'>ROLE</th><th scope='col'>STATUS</th></tr></thead><tbody>";
+        var search_user_result_html = "<table width='99%;' summary='USER SEARCH RESULTS'><caption>USER SEARCH RESULTS</caption><thead><tr><th scope='col'>USER NAME</th><th scope='col'>FIRST NAME</th><th scope='col'>LAST NAME</th><th scope='col'>ROLE</th><th scope='col'>STATUS</th></tr></thead><tbody>";
         if (IsSearchById == true) {
             search_user_result_html = populateUserSearchResultTable(
                     result.user, search_user_result_html);
@@ -354,7 +351,6 @@ var cncEvents = function () {
             });
         }
         search_user_result_html += "</tbody></table>";
-
         // $("#search-user-result-div").html(search_user_result_html);
         // Re-setting IsSearchById to false after
         // displaying the results
@@ -367,11 +363,10 @@ var cncEvents = function () {
         $("#search-message-result-div").removeClass("partial-success");
         $("#search-message-result-div").removeClass("error");
         var formattedMessageDate;
-        var search_message_result_html = "<table summary='MESSAGE SEARCH RESULTS'><caption>MESSAGE SEARCH RESULTS</caption>"
+        var search_message_result_html = "<table class='FL wow flipInY animated' data-wow-duration='500ms' width='99%;' summary='MESSAGE SEARCH RESULTS'><caption>MESSAGE SEARCH RESULTS</caption>"
                 + "<thead><tr><th scope='col' colspan='4'>DATE/TIME</th><th scope='col'>MESSAGE ID</th><th scope='col'>DEVICE ID</th>"
                 + "<th scope='col'>TYPE</th><th scope='col'>DEVICE TYPE</th><th scope='col' colspan='2'>MESSAGE</th></tr></thead>"
                 + "<tfoot><tr><td colspan='10'>End of message search results</td></tr></tfoot><tbody>";
-
         $.each(result.messages, function (index, value) {
             formattedMessageDate = new Date(value.messageDate);
             search_message_result_html += "<tr><td colspan='4'>"
@@ -391,32 +386,43 @@ var cncEvents = function () {
 
         $(resultDiv).html("");
         var displayMessage = "";
-
         if (resultDiv == "#search-user-result-div" && response.found == true) {
             displayMessage = getUserSearchResult(response);
-        } else if (resultDiv == "#search-device-result-div"
-                && response.found == true) {
+        }
+        else if (resultDiv == "#search-device-result-div" && response.found == true) {
             displayMessage = getDeviceSearchResult(response);
-        } else if (resultDiv == "#search-message-result-div"
+        }
+        else if (resultDiv == "#search-network-result-div") {
+            displayMessage = getNetworkSearchResult(response);
+        }
+        else if (resultDiv == "#search-message-result-div"
                 && response.found == true) {
             displayMessage = getMessageSearchResult(response);
-        } else if (status == "success" && response == "success") {
+        }
+        else if (status == "success" && response == "success") {
             $(resultDiv).removeClass("partial-success");
             $(resultDiv).addClass("success");
             displayMessage = getSuccessMessage(operation);
-        } else if (status == "success"
-                && (response == "failure" || response.found == false)) {
+        }
+        else if (status == "success" && (response == "failure" || response.found == false)) {
             $(resultDiv).removeClass("success");
             $(resultDiv).addClass("partial-success");
             displayMessage = getFailureMessage(operation);
-        } else if (status = "error") {
+        }
+        else if (status == "success" && response == "successPing") {
+            displayMessage = "MEG is connected.";
+        }
+        else if (response == "failurePing") {
+            displayMessage = "MEG is not connected. Please check the MEG is powered ON, or the cable connection with MEG is OK or entered IP address is valid IP address of MEG.";
+        }
+        else if (status = "error") {
             displayMessage = "Error Executing AJAX Request: " + response.error;
         }
         $(resultDiv).html(displayMessage);
     }
-    // End of private methods and properties
+// End of private methods and properties
 
-    // public methods and properties
+// public methods and properties
     return {
         setUserDropdown: function (dropdown) {
             setUserDropdownData(dropdown);
@@ -443,20 +449,17 @@ var cncEvents = function () {
 
                 var deviceMap = $("#map-div").gmap3("get");
                 var dropdownDeviceId = $("#deviceListDropdown").val();
-
                 var deviceMarker = $("#map-div").gmap3({
                     get: {
                         id: dropdownDeviceId
                     }
                 });
-
                 // Pan to the marker for the device id clicked from the device
                 // drop down list
                 deviceMap.panTo(deviceMarker.getPosition());
                 // open the info window over the marker
                 google.maps.event.trigger(deviceMarker, 'click');
             });
-
             /*
              * Setting a trigger on user update drop down so when a user id is
              * seleceted from the drop down, the user update form is
@@ -467,7 +470,6 @@ var cncEvents = function () {
                             function () {
 
                                 var searchUserId = $("#updateUserId").val();
-
                                 if (searchUserId == "" || searchUserId == " ") {
                                     $("#update-user-result-div").addClass(
                                             "error");
@@ -491,7 +493,6 @@ var cncEvents = function () {
                                                     });
                                 }
                             });
-
             /*
              * Setting a trigger on video camera list drop down so when a video
              * camera id is seleceted from the drop down, the video stream from
@@ -503,7 +504,6 @@ var cncEvents = function () {
                 video.src = videoStreamLink;
                 video.load();
             });
-
             // End of dropdown change bindings
             // Start of button bindings
 
@@ -531,7 +531,6 @@ var cncEvents = function () {
                                 }
 
                             });
-
             $("#searchMessagesByDeviceIdButton")
                     .click(
                             function (event) {
@@ -558,7 +557,6 @@ var cncEvents = function () {
                                             });
                                 }
                             });
-
             $("#searchDeviceByIdButton").click(
                     function (event) {
 
@@ -581,14 +579,12 @@ var cncEvents = function () {
                                     });
                         }
                     });
-
             $("#searchDevicesByNetworkButton").click(
                     function (event) {
 
                         var searchDeviceNetwork = $(
                                 "#deviceNetworkSearchDropdown").val();
                         var resultDiv = "#search-device-result-div";
-
                         if (searchDeviceNetwork == "") {
                             displayEmptyFieldMessage(resultDiv, dropdown);
                         } else {
@@ -605,13 +601,11 @@ var cncEvents = function () {
                                     });
                         }
                     });
-
             $("#searchDevicesByTypeButton").click(
                     function (event) {
 
                         var searchDeviceType = $("#deviceTypeSearchDropdown")
                                 .val();
-
                         var resultDiv = "#search-device-result-div";
                         var requestUrl = "/cnc/device/searchByType";
                         var sendData = {
@@ -624,7 +618,6 @@ var cncEvents = function () {
                                             resultDiv, searchOperation);
                                 });
                     });
-
             $("#searchDevicesByStatusButton").click(
                     function (event) {
 
@@ -642,14 +635,12 @@ var cncEvents = function () {
                                             resultDiv, searchOperation);
                                 });
                     });
-
             $("#deleteDeviceButton").click(
                     function (event) {
 
                         var resultDiv = "#delete-device-result-div";
                         var deleteDeviceId = $("#deviceIdDeleteTextField")
                                 .val();
-
                         if (deleteDeviceId == "" || deleteDeviceId == " ") {
                             displayEmptyFieldMessage(resultDiv, textfield);
                         } else {
@@ -665,7 +656,38 @@ var cncEvents = function () {
                                     });
                         }
                     });
+            $("#checkMegConnectionButton").click(
+                    function (event) {
 
+                        var resultDiv = "#check-meg-connection-result-div";
+                        var ipAddress = $("#megConnectivityField").val();
+                        if (ipAddress == "" || ipAddress == " ") {
+                            displayEmptyFieldMessage(resultDiv, textfield);
+                        } else {
+                            var requestUrl = "/cnc/network/pingNetwork";
+                            var sendData = {
+                                megIPAddress: ipAddress
+                            };
+                            cncDisplay.ExecuteAjaxRequest(requestUrl, sendData,
+                                    requestTypeGet, receiveTypeText, function (
+                                            response, status, error) {
+                                        displayRequestResult(response, status,
+                                                resultDiv, deleteOperation);
+                                    });
+                        }
+                    });
+            $("#searchNetworkButton").click(
+                    function (event) {
+
+                        var resultDiv = "#search-network-result-div";
+                        var requestUrl = "/cnc/network/getAllNetworks";
+                        cncDisplay.ExecuteAjaxRequest(requestUrl, null,
+                                requestTypeGet, receiveTypeJson, function (
+                                        response, status, error) {
+                                    displayRequestResult(response, status,
+                                            resultDiv, searchOperation);
+                                });
+                    });
             $("#configDeviceButton").click(
                     function (event) {
 
@@ -686,17 +708,15 @@ var cncEvents = function () {
                                         displayRequestResult(response, status,
                                                 resultDiv, configOperation);
                                     });
-
                         }
                     });
-
             $("#saveNetworkButton").click(
                     function (event) {
 
                         var resultDiv = "#create-network-result-div";
                         if ($("#networkId").val() == "" || $("#networkName").val() == "") {
                             displayEmptyFieldMessage(resultDiv, textfield);
-                        } 
+                        }
                         else {
                             var requestUrl = "/cnc/network/create";
                             var sendData = $("#networkAddForm").serialize();
@@ -709,15 +729,13 @@ var cncEvents = function () {
                         }
 
                     });
-
-
             $("#saveDeviceButton").click(
                     function (event) {
 
                         var resultDiv = "#create-device-result-div";
-                        if ($("#deviceId").val() == "" ) {
+                        if ($("#deviceId").val() == "") {
                             displayEmptyFieldMessage(resultDiv, textfield);
-                        } 
+                        }
                         else {
                             var requestUrl = "/cnc/device/addDevice";
                             var sendData = $("#deviceAddForm").serialize();
@@ -728,18 +746,15 @@ var cncEvents = function () {
                         }
 
                     });
-
             $("#saveUserButton").click(
                     function (event) {
 
                         var resultDiv = "#create-user-result-div";
-
                         if ($("#userId").val() == ""
                                 || $("#firstName").val() == ""
                                 || $("#lastName").val() == ""
                                 || $("#password").val() == "") {
                             displayEmptyFieldMessage(resultDiv, textfield);
-
                         } else {
                             var requestUrl = "/cnc/user/create";
                             var sendData = $("#userAddForm").serialize();
@@ -749,16 +764,13 @@ var cncEvents = function () {
                                         displayRequestResult(response, status,
                                                 resultDiv, saveOperation);
                                     });
-
                         }
                     });
-
             $("#searchUserByIdButton").click(
                     function (event) {
 
                         var searchUserId = $("#userIdSearchTextField").val();
                         var resultDiv = "#search-user-result-div";
-
                         if (searchUserId == "" || searchUserId == " ") {
                             displayEmptyFieldMessage(resultDiv, textfield);
                         } else {
@@ -776,7 +788,6 @@ var cncEvents = function () {
                                     });
                         }
                     });
-
             $("#searchUsersByRoleButton").click(
                     function (event) {
 
@@ -793,7 +804,6 @@ var cncEvents = function () {
                                             resultDiv, searchOperation);
                                 });
                     });
-
             $("#searchUsersByNameButton").click(
                     function (event) {
 
@@ -814,7 +824,6 @@ var cncEvents = function () {
                                     });
                         }
                     });
-
             $("#searchUsersByStatusButton").click(
                     function (event) {
 
@@ -831,7 +840,6 @@ var cncEvents = function () {
                                             resultDiv, searchOperation);
                                 });
                     });
-
             $("#updateUserButton").click(
                     function (event) {
 
@@ -850,12 +858,10 @@ var cncEvents = function () {
                                     });
                         }
                     });
-
             $("#deleteUserButton").click(
                     function (event) {
 
                         var resultDiv = "#delete-user-result-div";
-
                         var deleteUserId = $("#deleteUserIdDropdown").val();
                         if (deleteUserId == "" || deleteUserId == " ") {
                             displayEmptyFieldMessage(resultDiv, dropdown);
@@ -872,7 +878,6 @@ var cncEvents = function () {
                                     });
                         }
                     });
-
             $("#acceptAlertButton").click(
                     function (event) {
 
@@ -891,7 +896,6 @@ var cncEvents = function () {
                                         displayRequestResult(response, status,
                                                 resultDiv, acceptOperation);
                                     });
-
                             $("#receivedAlertDeviceId option").each(function () {
                                 if ($(this).val() == deviceId)
                                     $(this).css("background-color", "orange");
@@ -899,7 +903,6 @@ var cncEvents = function () {
                         }
 
                     });
-
             $("#assignAlertButton").click(
                     function (event) {
 
@@ -908,7 +911,6 @@ var cncEvents = function () {
                         var assignedTo = $("#assignedTo").val();
                         $('input:hidden[id="assignedBy"]').val(
                                 cncDisplay.getUsername());
-
                         if (deviceId == "" || assignedTo == "") {
                             displayEmptyFieldMessage(resultDiv, dropdown);
                         } else {
@@ -920,7 +922,6 @@ var cncEvents = function () {
                                         displayRequestResult(response, status,
                                                 resultDiv, assignOperation);
                                     });
-
                             $("#receivedAlertDeviceId option").each(function () {
                                 if ($(this).val() == deviceId) {
                                     $(this).remove();
@@ -928,7 +929,6 @@ var cncEvents = function () {
                             });
                         }
                     });
-
             $("#resolveAlertButton").click(
                     function (event) {
 
@@ -936,7 +936,6 @@ var cncEvents = function () {
                         var deviceId = $("#assignedAlertDeviceId").val();
                         $('input:hidden[id="resolvedBy"]').val(
                                 cncDisplay.getUsername());
-
                         if (deviceId == "") {
                             displayEmptyFieldMessage(resultDiv, dropdown);
                         } else {
@@ -948,13 +947,11 @@ var cncEvents = function () {
                                         displayRequestResult(response, status,
                                                 resultDiv, resolveOperation);
                                     });
-
                             cncDisplay.cleanupResolvedAlert(deviceId);
-
                         }
                     });
         }
     }
-    // End of public methods and properties
+// End of public methods and properties
 
 }();

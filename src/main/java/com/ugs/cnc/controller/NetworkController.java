@@ -9,6 +9,8 @@ package com.ugs.cnc.controller;
 
 import com.ugs.cnc.entities.Network;
 import com.ugs.cnc.service.INetworkService;
+import java.io.IOException;
+import java.net.InetAddress;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -96,6 +98,36 @@ public class NetworkController {
         responseMap.put("networks", networkList);
 
         return responseMap;
+    }
+    
+    /** 
+     * Method to Ping Network by IP. If it is reachable then returns Success. 
+     * (Check that MEG connectivity is OK or not) 
+     * @param ipAddress
+     * @return 
+     */
+    @RequestMapping(value = "/pingNetwork", method = RequestMethod.GET)
+    @ResponseBody
+    public String pingNetwork(@RequestParam("megIPAddress") String ipAddress) {
+        String returnValue = null; 
+        InetAddress inet = null;
+        System.out.println("IP Address : " + ipAddress);
+        try {
+            inet = InetAddress.getByName(ipAddress);
+            System.out.println("Sending Ping Request to " + ipAddress);
+            if( inet.isReachable(5000)){
+                returnValue = "successPing";
+                System.out.println("successPing");
+            }
+            else {
+                returnValue = "failurePing";
+                System.out.println("failurePing");
+            }
+        }
+        catch (IOException ex) {
+            
+        }
+        return returnValue; 
     }
 
     /**

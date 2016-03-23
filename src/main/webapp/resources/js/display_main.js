@@ -6,7 +6,7 @@
  */
 
 //Singleton
-var cncDisplay = function() {
+var cncDisplay = function () {
 
     // Private properties and methods
     var userRole = null;
@@ -16,8 +16,8 @@ var cncDisplay = function() {
     var alertInfowindow = null;
     var messageType = "";
     var $blinker = null;
-    var ws = null; 
-    var statusMessagePopupTimer = null; 
+    var ws = null;
+    var statusMessagePopupTimer = null;
     /*
      * Variable to determine if search is done by Id to determine the result as
      * a singular value. For searches performed through other filters, there
@@ -98,7 +98,7 @@ var cncDisplay = function() {
     function setTabs() {
         // Initializing the main display tabs
         $("#main-display-tabs").tabs({
-            beforeActivate: function(event, ui) {
+            beforeActivate: function (event, ui) {
                 if (ui.newPanel.selector == "#video-tab") {
                     $("#videoCameraDropdown").html("");
                     cncEvents.setVideoCameraDropdown();
@@ -122,7 +122,7 @@ var cncDisplay = function() {
         $("#device-side-tabs li").removeClass("ui-corner-top").addClass(
                 "ui-corner-left");
         $("#device-side-tabs").tabs({
-            beforeActivate: function(event, ui) {
+            beforeActivate: function (event, ui) {
                 if (ui.newPanel.selector == "#search-device-tab") {
                     $("#deviceNetworkSearchDropdown").html("");
                 }
@@ -130,10 +130,8 @@ var cncDisplay = function() {
             }
         });
         // Initializing the left side vertical alerts tabs
-        $("#alerts-side-tabs").tabs().addClass(
-                "ui-tabs-vertical ui-helper-clearfix");
-        $("#alerts-side-tabs li").removeClass("ui-corner-top").addClass(
-                "ui-corner-left");
+        $("#alerts-side-tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+        $("#alerts-side-tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
 
         // Initializing the left side vertical user tabs
         $("#user-side-tabs").tabs().addClass(
@@ -141,7 +139,7 @@ var cncDisplay = function() {
         $("#user-side_-abs li").removeClass("ui-corner-top").addClass(
                 "ui-corner-left");
         $("#user-side-tabs").tabs({
-            beforeActivate: function(event, ui) {
+            beforeActivate: function (event, ui) {
                 if (ui.newPanel.selector == "#update-user-tab") {
                     $("#updateUserId").html("");
                     cncEvents.setUserDropdown("update");
@@ -240,7 +238,7 @@ var cncDisplay = function() {
 
         // Creating a STOMP connection with the C2I application server
         ws = new SockJS('http://' + window.location.hostname + ':15674/stomp');
-        
+
         // var ws = new
         // SockJS('http://queue-c2i.ugs.sensorflock.com:15674/stomp');
 
@@ -250,11 +248,11 @@ var cncDisplay = function() {
         client.heartbeat.incoming = 0;
         client.debug = displayMessage('#log-console-div');
         var print_console = displayMessage('#main-console-div');
-        var on_connect = function(x) {
+        var on_connect = function (x) {
             // Subscribing to the auto-delete topic type queue with routing key:
             // browser-clients
             try {
-                id = client.subscribe("/topic/browser-clients", function(message) {
+                id = client.subscribe("/topic/browser-clients", function (message) {
                     var processedMessage = processMessage(message);
                     print_console(processedMessage, "to_console");
                 });
@@ -263,7 +261,7 @@ var cncDisplay = function() {
                 alert('Connection is not established. Try again');
             }
         };
-        var on_error = function(err) {
+        var on_error = function (err) {
             console.log('Error: STOMP connection failed');
             client.debug = displayMessage('#log-console-div');
             //alert(displayMessage('#log-console-div'));
@@ -285,16 +283,16 @@ var cncDisplay = function() {
             url: "/cnc/device/getAllDevices",
             dataType: "json",
             async: false,
-            success: function(data, status) {
+            success: function (data, status) {
                 result = data;
             },
-            error: function(data, status, er) {
+            error: function (data, status, er) {
                 console.log("Error: Devices could not be mapped!!!");
             }
         });
 
         // Now get Center point to make center of map 
-        $.each(result.devices, function(index, value) {
+        $.each(result.devices, function (index, value) {
 
             if (value.deviceLocation != null) {
 
@@ -325,7 +323,7 @@ var cncDisplay = function() {
 
         // For Multipe Popups open at the same time 
         L.Map = L.Map.extend({
-            openPopup: function(popup) {
+            openPopup: function (popup) {
                 // this.closePopup();  // just comment this
                 this._popup = popup;
                 return this.addLayer(popup).fire('popupopen', {popup: this._popup});
@@ -367,7 +365,7 @@ var cncDisplay = function() {
         // Getting device information for all the devices stored in the database
         // to plot the device data on the map
 
-        $.each(result.devices, function(index, value) {
+        $.each(result.devices, function (index, value) {
 
             if (value.deviceLocation != null) {
 
@@ -400,25 +398,25 @@ var cncDisplay = function() {
          **********************************************************************/
         $("#deviceListDropdown2")
                 .change(
-                function() {
-                    var deviceId = $("#deviceListDropdown2").val();
+                        function () {
+                            var deviceId = $("#deviceListDropdown2").val();
 
-                    var deviceData = cncDisplay.getDeviceById(deviceId);
-                    var InfowindowData = generatePopupHtmlForLeaflet(deviceData.device);
+                            var deviceData = cncDisplay.getDeviceById(deviceId);
+                            var InfowindowData = generatePopupHtmlForLeaflet(deviceData.device);
 
-                    var alertMarker;
-                    for (var index in markerArray) {
-                        var keyValue = markerArray[index];
+                            var alertMarker;
+                            for (var index in markerArray) {
+                                var keyValue = markerArray[index];
 
-                        if (keyValue[0] == deviceId) {
-                            alertMarker = keyValue[1];
-                        }
+                                if (keyValue[0] == deviceId) {
+                                    alertMarker = keyValue[1];
+                                }
 
-                    }
-                    var popupText = L.popup().setContent(InfowindowData);// .openOn(alertMarker);
-                    alertMarker.bindPopup(popupText).openPopup();
+                            }
+                            var popupText = L.popup().setContent(InfowindowData);// .openOn(alertMarker);
+                            alertMarker.bindPopup(popupText).openPopup();
 
-                });
+                        });
 
         // Setting the Animated Image below the Dropdown
         $('#alertTypeInfoDiv').parent().css("background", "url(" + imageDirectoryLocation + "blinking_radar.modified.gif) no-repeat");
@@ -640,7 +638,7 @@ var cncDisplay = function() {
             }
 
 
-            var devicePopupHtml = "<div class='infowindow'><font size=2><table><tr><td colspan='2' height='10' width='10'><center><b>"
+            var devicePopupHtml = "<div class='infowindow FL wow flipInY animated' data-wow-delay='1300ms'><font size=2><table><tr><td colspan='2' height='10' width='10'><center><b>"
                     + deviceTypeStr
                     + "</b></center></td></tr>"
 
@@ -969,7 +967,7 @@ var cncDisplay = function() {
          * link is stopped and does not keep running and buffering in the
          * background when the infowindow closes
          */
-        google.maps.event.addListener(infowindow, 'closeclick', function() {
+        google.maps.event.addListener(infowindow, 'closeclick', function () {
             var video = document.getElementById("infowindow-video-player");
             video.pause();
             video.src = "";
@@ -1014,44 +1012,44 @@ var cncDisplay = function() {
          */
         startDateTextBox
                 .datetimepicker({
-            onClose: function(dateText, inst) {
-                if (endDateTextBox.val() != '') {
-                    var testStartDate = startDateTextBox
-                            .datetimepicker('getDate');
-                    var testEndDate = endDateTextBox
-                            .datetimepicker('getDate');
-                    if (testStartDate > testEndDate)
-                        endDateTextBox.datetimepicker('setDate',
-                                testStartDate);
-                } else {
-                    endDateTextBox.val(dateText);
-                }
-            },
-            onSelect: function(selectedDateTime) {
-                endDateTextBox.datetimepicker('option', 'minDate',
-                        startDateTextBox.datetimepicker('getDate'));
-            }
-        });
+                    onClose: function (dateText, inst) {
+                        if (endDateTextBox.val() != '') {
+                            var testStartDate = startDateTextBox
+                                    .datetimepicker('getDate');
+                            var testEndDate = endDateTextBox
+                                    .datetimepicker('getDate');
+                            if (testStartDate > testEndDate)
+                                endDateTextBox.datetimepicker('setDate',
+                                        testStartDate);
+                        } else {
+                            endDateTextBox.val(dateText);
+                        }
+                    },
+                    onSelect: function (selectedDateTime) {
+                        endDateTextBox.datetimepicker('option', 'minDate',
+                                startDateTextBox.datetimepicker('getDate'));
+                    }
+                });
         endDateTextBox
                 .datetimepicker({
-            onClose: function(dateText, inst) {
-                if (startDateTextBox.val() != '') {
-                    var testStartDate = startDateTextBox
-                            .datetimepicker('getDate');
-                    var testEndDate = endDateTextBox
-                            .datetimepicker('getDate');
-                    if (testStartDate > testEndDate)
-                        startDateTextBox.datetimepicker('setDate',
-                                testEndDate);
-                } else {
-                    startDateTextBox.val(dateText);
-                }
-            },
-            onSelect: function(selectedDateTime) {
-                startDateTextBox.datetimepicker('option', 'maxDate',
-                        endDateTextBox.datetimepicker('getDate'));
-            }
-        });
+                    onClose: function (dateText, inst) {
+                        if (startDateTextBox.val() != '') {
+                            var testStartDate = startDateTextBox
+                                    .datetimepicker('getDate');
+                            var testEndDate = endDateTextBox
+                                    .datetimepicker('getDate');
+                            if (testStartDate > testEndDate)
+                                startDateTextBox.datetimepicker('setDate',
+                                        testEndDate);
+                        } else {
+                            startDateTextBox.val(dateText);
+                        }
+                    },
+                    onSelect: function (selectedDateTime) {
+                        startDateTextBox.datetimepicker('option', 'maxDate',
+                                endDateTextBox.datetimepicker('getDate'));
+                    }
+                });
     }
 
     /*
@@ -1178,7 +1176,7 @@ var cncDisplay = function() {
      * plays an alert sound
      */
     function generateAlert(deviceId) {
-        
+
         var deviceMap = $("#map-div").gmap3("get");
         var alert_beep_url = audioDirectoryLocation + "alert.wav";
         var alert_beep = new Audio(alert_beep_url);
@@ -1253,7 +1251,7 @@ var cncDisplay = function() {
                         maxWidth: 200
                     },
                     events: {
-                        closeclick: function() {
+                        closeclick: function () {
                             var closedInfowindow = $(this).gmap3({
                                 get: {
                                     id: alertInfowindowId
@@ -1289,7 +1287,7 @@ var cncDisplay = function() {
      * Generate Alert for Leaflet.
      */
     function generateAlertForLeaflet(deviceId) {
-                
+
         try {
             var popup;
 
@@ -1346,7 +1344,7 @@ var cncDisplay = function() {
                 iconSize: [50, 50]
             });
             alertMarker.setIcon(dynamicIcon);
-            setTimeout(function() {
+            setTimeout(function () {
                 alertMarker.setIcon(staticIcon);
             }, 12000);
 
@@ -1437,7 +1435,7 @@ var cncDisplay = function() {
      * in real time on the map
      */
     function processMessage(message) {
-        
+
         var alertIcon = null;
         var deviceId;
         var consoleDisplayMessage = "Console Message";
@@ -1474,7 +1472,7 @@ var cncDisplay = function() {
 
             if ((msg.messageType == "ALERT" || msg.messageType == "INVALID")
                     && (msg.messageDeviceType == "PIR_SENSOR_NODE" || msg.messageDeviceType == "DUAL_SENSOR_NODE" ||
-                    msg.messageDeviceType == "SEISMIC_SENSOR_NODE")
+                            msg.messageDeviceType == "SEISMIC_SENSOR_NODE")
                     ) {
 
                 // Getting Specific Alert Marker
@@ -1501,7 +1499,7 @@ var cncDisplay = function() {
                         var explodePopup = explodePopupHtmlForLeaflet(deviceData2.device);
                         alertMarker.closePopup();
                         alertMarker.bindPopup(explodePopup).openPopup();
-                        setTimeout(function() {
+                        setTimeout(function () {
                             alertMarker.closePopup();
                             alertMarker.bindPopup(infowindowData); // binding the main information popup
 
@@ -1516,7 +1514,7 @@ var cncDisplay = function() {
                     var alertDate = new Date(msg.messageDate);
                     var alertData = alertDate + " Device Id: "
                             + msg.messageDeviceId;
-                    
+
                     //alert(alertData);
 
                     $("#receivedAlertDeviceId").append($("<option>", {
@@ -1549,7 +1547,7 @@ var cncDisplay = function() {
 
                             var $timeoutHandle1 = 0;
 
-                            setTimeout(function() {
+                            setTimeout(function () {
 
                                 $('#alertTypeInfoDiv').parent().css("background", "url(" + imageDirectoryLocation + "blinking_radar.modified.gif) no-repeat");
                                 $('#alertTypeInfoDiv').parent().css("background-size", "150px 110px");
@@ -1563,7 +1561,7 @@ var cncDisplay = function() {
 
                             var $timeoutHandle2 = 0;
 
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 $('#alertTypeInfoDiv').parent().css("background", "url(" + imageDirectoryLocation + "blinking_radar.modified.gif) no-repeat");
                                 $('#alertTypeInfoDiv').parent().css("background-size", "150px 110px");
                             }, 60000);
@@ -1576,7 +1574,7 @@ var cncDisplay = function() {
 
                             var $timeoutHandle3 = 0;
 
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 $('#alertTypeInfoDiv').parent().css("background", "url(" + imageDirectoryLocation + "blinking_radar.modified.gif) no-repeat");
                                 $('#alertTypeInfoDiv').parent().css("background-size", "150px 110px");
                             }, 60000);
@@ -1589,13 +1587,13 @@ var cncDisplay = function() {
 
                             var $timeoutHandle4 = 0;
 
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 $('#alertTypeInfoDiv').parent().css("background", "url(" + imageDirectoryLocation + "blinking_radar.modified.gif) no-repeat");
                                 $('#alertTypeInfoDiv').parent().css("background-size", "150px 110px");
                             }, 60000);
                             //clearTimeout($timeoutHandle4);
                         }
-                        
+
                         // Play sound on msg 
                         var moving_target_beep_url = audioDirectoryLocation + "moving_target_beep.wav";
                         var moving_target_beep = new Audio(moving_target_beep_url);
@@ -1634,7 +1632,7 @@ var cncDisplay = function() {
                     alertMarker.closePopup();
                     alertMarker.bindPopup("Device ID : " + msg.messageDeviceId + " Location changed").openPopup();
                     clearTimeout(statusMessagePopupTimer);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         alertMarker.closePopup();
                         alertMarker.bindPopup(infowindowData); // binding the main information popup
                     }, 3000);
@@ -1656,7 +1654,7 @@ var cncDisplay = function() {
                 }
 
 
-                $("#receivedAlertDeviceId option").each(function() {
+                $("#receivedAlertDeviceId option").each(function () {
                     if ($(this).val() == msg.messageDeviceId) {
                         $(this).remove();
 
@@ -1701,8 +1699,8 @@ var cncDisplay = function() {
              **************************************************************************/
 
             else if (msg.messageType == "STATUS") {
-                
-                
+
+
                 // Getting Specific Marker
                 var alertMarker;
                 for (var index in markerArray) {
@@ -1715,9 +1713,9 @@ var cncDisplay = function() {
                 // Status ON
                 if (msg.messageRawData == "1") {
                     alertMarker.closePopup();
-                    alertMarker.bindPopup( "Device ID : " + msg.messageDeviceId + " is Connected now").openPopup();
+                    alertMarker.bindPopup("Device ID : " + msg.messageDeviceId + " is Connected now").openPopup();
                     clearTimeout(statusMessagePopupTimer);
-                    statusMessagePopupTimer = setTimeout(function() {
+                    statusMessagePopupTimer = setTimeout(function () {
                         alertMarker.closePopup();
                         alertMarker.bindPopup(infowindowData); // binding the main information popup
                     }, 3000);
@@ -1743,7 +1741,7 @@ var cncDisplay = function() {
                             "Device ID : " + msg.messageDeviceId
                             + " is OFF now").openPopup();
                     clearTimeout(statusMessagePopupTimer);
-                statusMessagePopupTimer = setTimeout(function() {
+                    statusMessagePopupTimer = setTimeout(function () {
                         alertMarker.closePopup();
                         alertMarker.bindPopup(infowindowData); // binding the main information popup
                     }, 3000);
@@ -1763,7 +1761,7 @@ var cncDisplay = function() {
                             "Device ID : " + msg.messageDeviceId
                             + " is locking GPS now").openPopup();
                     clearTimeout(statusMessagePopupTimer);
-                statusMessagePopupTimer = setTimeout(function() {
+                    statusMessagePopupTimer = setTimeout(function () {
                         alertMarker.closePopup();
                         alertMarker.bindPopup(infowindowData); // binding the main information popup
                     }, 3000);
@@ -1786,11 +1784,11 @@ var cncDisplay = function() {
                             "Device ID : " + msg.messageDeviceId
                             + " has failed in locking GPS").openPopup();
                     clearTimeout(statusMessagePopupTimer);
-                    statusMessagePopupTimer = setTimeout(function() {
+                    statusMessagePopupTimer = setTimeout(function () {
                         alertMarker.closePopup();
                         alertMarker.bindPopup(infowindowData); // binding the main information popup
                     }, 3000);
-                    
+
                     // Add the On Status Marker
                     var greenIcon;
                     greenIcon = L.icon({
@@ -1805,7 +1803,7 @@ var cncDisplay = function() {
                 // connected');
                 // w.focus();
                 // setTimeout(function() {w.close();}, 5000);
-                
+
                 var moving_target_beep_url = audioDirectoryLocation + "moving_target_beep.wav";
                 var moving_target_beep = new Audio(moving_target_beep_url);
                 moving_target_beep.play();
@@ -1822,7 +1820,7 @@ var cncDisplay = function() {
                 }
                 alertMarker.closePopup();
                 var poppp = alertMarker.bindPopup("Device ID : " + msg.messageDeviceId + " heart beat received").openPopup();
-                setTimeout(function() {
+                setTimeout(function () {
                     alertMarker.closePopup();
                     alertMarker.bindPopup(infowindowData); // binding the main information popup
                 }, 3000);
@@ -1845,11 +1843,11 @@ var cncDisplay = function() {
                 alertMarker.closePopup();
                 var poppp = alertMarker.bindPopup("Battery status of device " + msg.messageDeviceId + " : " + msg.batteryStatus).openPopup();
                 clearTimeout(statusMessagePopupTimer);
-                statusMessagePopupTimer = setTimeout(function() {
+                statusMessagePopupTimer = setTimeout(function () {
                     alertMarker.closePopup();
                     alertMarker.bindPopup(infowindowData); // binding the main information popup
                 }, 3000);
-                
+
                 // Play sound on msg 
                 var moving_target_beep_url = audioDirectoryLocation + "moving_target_beep.wav";
                 var moving_target_beep = new Audio(moving_target_beep_url);
@@ -1865,17 +1863,17 @@ var cncDisplay = function() {
                         alertMarker = keyValue[1];
                     }
                 }
-                
+
                 alertMarker.closePopup();
                 alertMarker.bindPopup("Device ID : " + msg.messageDeviceId + " is authenticated.").openPopup();
-                
+
                 clearTimeout(statusMessagePopupTimer);
-                statusMessagePopupTimer = setTimeout(function() {
+                statusMessagePopupTimer = setTimeout(function () {
                     alertMarker.closePopup();
                     alertMarker.bindPopup(infowindowData); // binding the main information popup
                 }, 3000);
-                
-                
+
+
                 // Play sound on msg 
                 var moving_target_beep_url = audioDirectoryLocation + "moving_target_beep.wav";
                 var moving_target_beep = new Audio(moving_target_beep_url);
@@ -1893,7 +1891,7 @@ var cncDisplay = function() {
 
         var div = $(console + ' div');
 
-        var print = function(message, output) {
+        var print = function (message, output) {
 
             if (messageType == "ALERT" && output == "to_console") {
                 div.append($("<font color='red'>").text(message));
@@ -1954,7 +1952,7 @@ var cncDisplay = function() {
         var sendData = {
             deviceIdDeleteParam: deviceId
         };
-        cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet, receiveTypeText, function(response, status, error) {
+        cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet, receiveTypeText, function (response, status, error) {
         });
 
         // Getting Specific Alert Marker
@@ -1990,7 +1988,7 @@ var cncDisplay = function() {
                         networkIdParam: networkId
 
                     };
-                    cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet, receiveTypeText, function(response, status, error) {
+                    cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet, receiveTypeText, function (response, status, error) {
 
                     });
 
@@ -2052,10 +2050,10 @@ var cncDisplay = function() {
             deviceIdUpdateParam: deviceId
         };
         cncDisplay.ExecuteAjaxRequest(requestUrl, sendData,
-                requestTypeGet, receiveTypeText, function(response, status, error) {
+                requestTypeGet, receiveTypeText, function (response, status, error) {
 //					displayRequestResult(response, status,
 //							resultDiv, deleteOperation);
-        });
+                });
 
         // Getting Specific Alert Marker
         var alertMarker;
@@ -2116,12 +2114,12 @@ var cncDisplay = function() {
                     deviceLongitudeUpdateParam: logitude
                 };
                 cncDisplay.ExecuteAjaxRequest(requestUrl, sendData,
-                        requestTypeGet, receiveTypeText, function(response, status, error) {
+                        requestTypeGet, receiveTypeText, function (response, status, error) {
 //					displayRequestResult(response, status,
 //							resultDiv, deleteOperation);
-                });
-                
-                
+                        });
+
+
 //                
 //
 //                // Getting Specific Alert Marker
@@ -2158,20 +2156,20 @@ var cncDisplay = function() {
 
     // Public methods and properties
     return {
-        setUserRole: function(role) {
+        setUserRole: function (role) {
             userRole = role;
         },
-        getUserRole: function() {
+        getUserRole: function () {
             return userRole;
         },
-        setUsername: function(user) {
+        setUsername: function (user) {
             username = user;
         },
-        getUsername: function() {
+        getUsername: function () {
             return username;
         },
         // Method to setup the main C2I Display screen
-        initializeMainDisplay: function() {
+        initializeMainDisplay: function () {
             setTabs();
             setUserPermissions();
             // setMap();
@@ -2183,7 +2181,7 @@ var cncDisplay = function() {
         /*
          * Function to execute an Ajax request
          */
-        ExecuteAjaxRequest: function(requestUrl, sendData, requestType,
+        ExecuteAjaxRequest: function (requestUrl, sendData, requestType,
                 receiveDataType, callback) {
 
             $.ajax({
@@ -2205,31 +2203,31 @@ var cncDisplay = function() {
 //        closeInfowindow: function(deviceId) {
 //            closeAlertInfowindow(deviceId);
 //        },
-        closeInfowindowForLeaflet: function(deviceId) {
+        closeInfowindowForLeaflet: function (deviceId) {
             closeAlertInfowindowForLeaflet(deviceId);
         },
-        assignAlert: function() {
+        assignAlert: function () {
             assignAlertFunction();
         },
-        runNtvd: function() {
+        runNtvd: function () {
             runNtvdFunction();
         },
-        removeDeviceById: function(deviceId) {
+        removeDeviceById: function (deviceId) {
             removeDeviceByIdFunction(deviceId);
         },
-        authenticatePopup: function(deviceId, devicePhysicalMacAddress, networkId) {
+        authenticatePopup: function (deviceId, devicePhysicalMacAddress, networkId) {
             authenticatePopupFunction(deviceId, devicePhysicalMacAddress, networkId);
         },
-        turnOffDeviceById: function(deviceId) {
+        turnOffDeviceById: function (deviceId) {
             turnOffDeviceByIdFunction(deviceId);
         },
-        updateLocation: function(deviceId) {
+        updateLocation: function (deviceId) {
             updateLocationFunction(deviceId);
         },
         /*
          * Function to get a device by it's Id
          */
-        getDeviceById: function(deviceId) {
+        getDeviceById: function (deviceId) {
 
             var result;
             $.ajax({
@@ -2240,18 +2238,18 @@ var cncDisplay = function() {
                 url: "/cnc/device/searchById",
                 async: false,
                 dataType: "json",
-                success: function(data, status) {
+                success: function (data, status) {
                     result = data;
                 },
-                error: function(data, status, er) {
+                error: function (data, status, er) {
                     console.log("Error: Device Id not found!!!");
                 }
             });
             return result;
         },
-        cleanupResolvedAlert: function(deviceId) {
+        cleanupResolvedAlert: function (deviceId) {
 
-            $("#assignedAlertDeviceId option").each(function() {
+            $("#assignedAlertDeviceId option").each(function () {
                 if ($(this).val() == deviceId) {
                     $(this).remove();
                 }

@@ -204,6 +204,19 @@ input {
     font-size: 14px;
 }
 
+.userguide {
+    border-radius: 15px;
+    padding: 0px 10px 10px 10px;
+    background-color: #202020;
+    border: 1px solid #ccc;
+    font-family: verdana;
+    width: 98%;
+    margin-bottom: 10px;
+    
+    color: #CC9933;
+    font-size: 14px;
+}
+
 .search-message {
     border-radius: 15px;
     width: 98%;
@@ -329,7 +342,7 @@ input {
     width: 99%;
     background-color: black;
     float: left;
-    height: 400px;
+    height: 550px;
     color: green;
     padding: 5px;
     position: relative; 
@@ -474,6 +487,13 @@ div code {
     width: 80%;
     position: relative;
 }
+#search-network-tab{
+    background: #ccc;
+    border: 3px solid #ccc;
+    width: 80%;
+    position: relative;
+}
+
 
 #add-device-tab{
     background: #ccc;
@@ -490,6 +510,13 @@ div code {
 }
 
 #delete-device-tab{
+    background: #ccc;
+    border: 3px solid #ccc;
+    width: 80%;
+    position: relative;
+}
+
+#meg-connectivity-tab{
     background: #ccc;
     border: 3px solid #ccc;
     width: 80%;
@@ -543,17 +570,25 @@ div code {
 
 #map_tab_leaflet {
     background: gray;
-
     margin: 0px 0px 0px 0px;
     height: 600px;
 }
 
+#userguide-tab {
+    background: gray;
+    margin: 0px 0px 0px 0px;
+}
+#brochure-tab {
+    background: gray;
+    margin: 0px 0px 0px 0px;
+}
+
 #console-tab {
-    height: 415px;
+    height: 560px;
 }
 
 #logs-tab {
-    height: 415px;
+    height: 560px;
 }
 
 /* For Jquery UI tab vertical tab styling*/
