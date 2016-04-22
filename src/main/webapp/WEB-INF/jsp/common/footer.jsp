@@ -1,7 +1,4 @@
 <div class="footer">
- <div class="text">
- 
- <font size=1>Copyright 2016 R&E LAB Military College of Signals</font></div>
+ <div align='center'>
+      <font size=1 style="color: black;">&copy; 2016 Military College of Signals Rawalpindi</font></div>
 </div>
-</body>
-<html>

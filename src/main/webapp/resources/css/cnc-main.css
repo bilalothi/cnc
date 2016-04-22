@@ -10,6 +10,17 @@ body {
     height: 100%;
 }
 
+.circleBase {
+    border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.type1 {
+    width: 100px;
+    height: 100px;
+    background: yellow;
+    border: 3px solid red;
+}
 
 .forms input {
     display: inline;
@@ -323,11 +334,17 @@ input {
 #alert_type_info_div{
     position: absolute;
     float: right;
-    top: 35px;
+    top: 50px;
     right: 10px;
     width: 150px;
-    height: 110px; 			
+    height: 110px; 
 
+}
+
+.applModeLabel {
+    background-color: #11125C;
+    color: red;
+    width: 150px;
 }
 
 .devicelist {
@@ -517,6 +534,13 @@ div code {
 }
 
 #meg-connectivity-tab{
+    background: #ccc;
+    border: 3px solid #ccc;
+    width: 80%;
+    position: relative;
+}
+
+#appl-mode-tab {
     background: #ccc;
     border: 3px solid #ccc;
     width: 80%;

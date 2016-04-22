@@ -89,12 +89,30 @@ public class DeviceController {
             device.setNetworkId(network.getNetworkId());
 
         }
+        else {
+            return "failureNoNetwork";
+        }
+        
+        Device device0 = null; 
+        Location device0Location = null; 
+        
+        if( !device.getDeviceId().equals("0")) {
+            device0 = deviceService.findByDeviceId("0");
+            device0Location = device0.getDeviceLocation(); 
+        }
 
         // Location 
         Location location = new Location();
         location.setDeviceId(device.getDeviceId());
-        location.setlatitude(33.57957);
-        location.setLongitude(73.06767);
+        
+        if( device0Location != null ) {
+            location.setlatitude(device0Location.getlatitude());
+            location.setLongitude(device0Location.getLongitude());
+        }
+        else {
+            location.setlatitude(33.56642);
+            location.setLongitude(72.9629999);
+        }
         location.setAltitude(100D);
         device.setDeviceLocation(location);
 
@@ -118,12 +136,13 @@ public class DeviceController {
         }
 
         logger.debug("Inside device save controller method");
-        System.out.println("Inside device save controller method");
-
+        
         Device alreadyExistingDevice = deviceService.findByDeviceId(device.getDeviceId());
         if (alreadyExistingDevice != null) {
             return "failure";
         }
+        
+        
         deviceService.saveDevice(device);
         return "success";
     }

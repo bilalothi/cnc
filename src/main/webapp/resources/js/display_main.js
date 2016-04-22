@@ -308,7 +308,12 @@ var cncDisplay = function () {
         //var cloudmadeUrl = 'http://192.168.66.150:8083/leaflet/tiles/{styleId}/{z}/{x}/{y}.png', cloudmadeAttribution = 'R&E Lab C&IT Br GHQ Rwp - Project UGS';
         //var cloudmadeUrl = 'http://localhost:8083/leaflet/tiles/{styleId}/{z}/{x}/{y}.png', cloudmadeAttribution = 'R&E Lab Military College of Signals';
         //var cloudmadeUrl = 'http://' + window.location.hostname + ':' + window.location.port + '/leaflet/tiles/{styleId}/{z}/{x}/{y}.png', cloudmadeAttribution = 'R&E Lab Military College of Signals';
-        var cloudmadeUrl = 'http://' + window.location.hostname + ':' + window.location.port + '/cnc/resources/{styleId}/{z}/{x}/{y}.png', cloudmadeAttribution = 'R&E Lab Military College of Signals';
+        //// For main format my system Gmap catcher 
+        //var cloudmadeUrl = 'http://' + window.location.hostname + ':' + window.location.port + '/cnc/resources/{styleId}/{z}/{x}/{y}.png', cloudmadeAttribution = 'R&E Lab Military College of Signals';
+
+        // For -1, -2 format 
+        var cloudmadeUrl = 'http://' + window.location.hostname + ':' + window.location.port + '/cnc/resources/{styleId}/{z0}/{x0}/{x1}/{y0}/{y1}.png', cloudmadeAttribution = 'R&E Lab Military College of Signals';
+        //L.tileLayer('img/tiles/gMapCatcher/{z0}/{x0}/{x1}/{y0}/{y1}.png').addTo(map); //gMapCatcher
 
         var satelite = L.tileLayer(cloudmadeUrl, {
             styleId: 'satelite',
@@ -333,11 +338,15 @@ var cncDisplay = function () {
         map = L.map('map', {
             //center : new L.LatLng(33.586018, 73.047219),
             center: new L.LatLng(centerLat, centerLong),
-            zoom: 17,
+            //zoom: 17,
+            zoom: 13,
             layers: [satelite]
         });
 
-        map.options.maxZoom = 19;
+        //map.options.maxZoom = 19;
+        //map.options.minZoom = 2;
+        
+        map.options.maxZoom = 15;
         map.options.minZoom = 2;
 
         var baseMaps = {
@@ -372,6 +381,24 @@ var cncDisplay = function () {
                 var deviceId = value.deviceId;
                 var deviceType = value.deviceType;
                 var deviceStatus = value.deviceStatus;
+                
+                // Setting Application Mode 
+                if( deviceId == '0') {
+                    var applMode = value.applMode; 
+                    
+                    if( applMode == 1 ) {
+                        $("#applMode").replaceWith("-- Wind Mode --");
+                    }
+                    if( applMode == 2 ) {
+                        $("#applMode").replaceWith("-- Day Mode --");
+                    }
+                    if( applMode == 3 ) {
+                        $("#applMode").replaceWith("-- Night Mode --");
+                    }
+                    else {
+                        $("#applMode").replaceWith("Normal Mode");
+                    }
+                }
 
                 var deviceMarkerLocation = [];
 
@@ -1947,24 +1974,30 @@ var cncDisplay = function () {
      * Remove button in Popup HTML Box
      *******************************************************/
     function removeDeviceByIdFunction(deviceId) {
+        
+        if (deviceId !== 0) {
+            if (confirm('Are you sure you want to delete this device?')) {
 
-        var requestUrl = "/cnc/device/delete";
-        var sendData = {
-            deviceIdDeleteParam: deviceId
-        };
-        cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet, receiveTypeText, function (response, status, error) {
-        });
 
-        // Getting Specific Alert Marker
-        var alertMarker;
-        for (var index in markerArray) {
-            var keyValue = markerArray[index];
-            if (keyValue[0] == deviceId) {
-                alertMarker = keyValue[1];
+                var requestUrl = "/cnc/device/delete";
+                var sendData = {
+                    deviceIdDeleteParam: deviceId
+                };
+                cncDisplay.ExecuteAjaxRequest(requestUrl, sendData, requestTypeGet, receiveTypeText, function (response, status, error) {
+                });
+
+                // Getting Specific Alert Marker
+                var alertMarker;
+                for (var index in markerArray) {
+                    var keyValue = markerArray[index];
+                    if (keyValue[0] == deviceId) {
+                        alertMarker = keyValue[1];
+                    }
+                }
+
+                map.removeLayer(alertMarker);
             }
         }
-
-        map.removeLayer(alertMarker);
 
 
     }
@@ -2117,7 +2150,16 @@ var cncDisplay = function () {
                         requestTypeGet, receiveTypeText, function (response, status, error) {
 //					displayRequestResult(response, status,
 //							resultDiv, deleteOperation);
+
+
+                            if (response == 'success') {
+                                alert("Location updated successfully. Refresh the browser");
+                            }
+                            else {
+                                alert("Location is not updated. Try again!");
+                            }
                         });
+
 
 
 //                

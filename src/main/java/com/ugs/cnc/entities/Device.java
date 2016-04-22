@@ -7,7 +7,6 @@
  * 
  * Version 1.1
  */
-
 package com.ugs.cnc.entities;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -29,226 +28,232 @@ import javax.persistence.Table;
 @Table(name = "Device_Info")
 public class Device implements Serializable {
 
-	private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-	@Id
-	@Column(name = "Device_Id", nullable = false)
-	private String deviceId;
-	@Column(name = "Device_Status", nullable = false)
-	private String deviceStatus;
-	@Column(name = "Device_Type", nullable = false)
-	private String deviceType;
-	@Column(name = "Device_Type_Char")
-	private String deviceTypeChar;
-	// MAC Address for device
-	@Column(name = "Device_MAC_Address")
-	private String devicePhysicalAddress;
+    @Id
+    @Column(name = "Device_Id", nullable = false)
+    private String deviceId;
+    @Column(name = "Device_Status", nullable = false)
+    private String deviceStatus;
+    @Column(name = "Device_Type", nullable = false)
+    private String deviceType;
+    @Column(name = "Device_Type_Char")
+    private String deviceTypeChar;
+    // MAC Address for device
+    @Column(name = "Device_MAC_Address")
+    private String devicePhysicalAddress;
 	// @OneToOne(cascade = CascadeType.ALL)
-	// @PrimaryKeyJoinColumn
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "device", cascade = CascadeType.ALL)
-	private Location deviceLocation;
-	@Column(name = "Network_Id")
-	private String networkId;
-	@Column(name = "Battery")
-	private Integer deviceBattery;
-	@Column(name = "Sensitivity")
-	private Integer deviceSensitivity;
-	@Column(name = "Signal_Strength")
-	private Integer deviceSignalStrength;
-	@Column(name = "Link_Quality")
-	private Integer deviceLinkQualityIndicator;
-	@Column(name = "Primary_Router_Id")
-	private String devicePrimaryRouterId;
-	@Column(name = "Secondry_Router_Id")
-	private String deviceSecondryRouterId;
-	@Column(name = "Video_Stream_Link")
-	private String videoStreamLink;
-	@Column(name = "Last_Alert_Time")
-	private Date lastAlertTime; 
-	@Column(name = "Explodable")
-	private Boolean explodable;
+    // @PrimaryKeyJoinColumn
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "device", cascade = CascadeType.ALL)
+    private Location deviceLocation;
+    @Column(name = "Network_Id")
+    private String networkId;
+    @Column(name = "Battery")
+    private Integer deviceBattery;
+    @Column(name = "Sensitivity")
+    private Integer deviceSensitivity;
+    @Column(name = "Signal_Strength")
+    private Integer deviceSignalStrength;
+    @Column(name = "Link_Quality")
+    private Integer deviceLinkQualityIndicator;
+    @Column(name = "Primary_Router_Id")
+    private String devicePrimaryRouterId;
+    @Column(name = "Secondry_Router_Id")
+    private String deviceSecondryRouterId;
+    @Column(name = "Video_Stream_Link")
+    private String videoStreamLink;
+    @Column(name = "Last_Alert_Time")
+    private Date lastAlertTime;
+    @Column(name = "Explodable")
+    private Boolean explodable;
+    @Column(name = "appl_mode")
+    private Integer applMode;
 
-	public String getVideoStreamLink() {
-		return videoStreamLink;
-	}
+    public String getVideoStreamLink() {
+        return videoStreamLink;
+    }
 
-	public void setVideoStreamLink(String videoStreamLink) {
-		this.videoStreamLink = videoStreamLink;
-	}
+    public void setVideoStreamLink(String videoStreamLink) {
+        this.videoStreamLink = videoStreamLink;
+    }
 
-	public String getDeviceId() {
-		return deviceId;
-	}
+    public String getDeviceId() {
+        return deviceId;
+    }
 
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
-	}
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
-	public String getDeviceStatus() {
-		return deviceStatus;
-	}
+    public String getDeviceStatus() {
+        return deviceStatus;
+    }
 
-	public void setDeviceStatus(String deviceStatus) {
-		this.deviceStatus = deviceStatus;
-	}
+    public void setDeviceStatus(String deviceStatus) {
+        this.deviceStatus = deviceStatus;
+    }
 
-	public String getDeviceType() {
-		return deviceType;
-	}
+    public String getDeviceType() {
+        return deviceType;
+    }
 
-	public void setDeviceType(String deviceType) {
-		this.deviceType = deviceType;
-	}
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
 
-	
-	public Boolean getExplodable() {
-		return explodable;
-	}
+    public Boolean getExplodable() {
+        return explodable;
+    }
 
-	public void setExplodable(Boolean explodable) {
-		this.explodable = explodable;
-	}
+    public void setExplodable(Boolean explodable) {
+        this.explodable = explodable;
+    }
 
-	public String getDeviceTypeChar() {
-		return deviceTypeChar;
-	}
+    public String getDeviceTypeChar() {
+        return deviceTypeChar;
+    }
 
-	public void setDeviceTypeChar(String deviceTypeChar) {
-		this.deviceTypeChar = deviceTypeChar;
-	}
+    public void setDeviceTypeChar(String deviceTypeChar) {
+        this.deviceTypeChar = deviceTypeChar;
+    }
 
-	public String getDevicePhysicalAddress() {
-		return devicePhysicalAddress;
-	}
+    public String getDevicePhysicalAddress() {
+        return devicePhysicalAddress;
+    }
 
-	public void setDevicePhysicalAddress(String devicePhysicalAddress) {
-		this.devicePhysicalAddress = devicePhysicalAddress;
-	}
+    public void setDevicePhysicalAddress(String devicePhysicalAddress) {
+        this.devicePhysicalAddress = devicePhysicalAddress;
+    }
 
-	public Location getDeviceLocation() {
-		return deviceLocation;
-	}
+    public Location getDeviceLocation() {
+        return deviceLocation;
+    }
 
-	public void setDeviceLocation(Location deviceLocation) {
-		this.deviceLocation = deviceLocation;
-	}
+    public void setDeviceLocation(Location deviceLocation) {
+        this.deviceLocation = deviceLocation;
+    }
 
-	public String getNetworkId() {
-		return networkId;
-	}
+    public String getNetworkId() {
+        return networkId;
+    }
 
-	public void setNetworkId(String networkId) {
-		this.networkId = networkId;
-	}
+    public void setNetworkId(String networkId) {
+        this.networkId = networkId;
+    }
 
-	public Integer getDeviceSensitivity() {
-		return deviceSensitivity;
-	}
+    public Integer getDeviceSensitivity() {
+        return deviceSensitivity;
+    }
 
-	public void setDeviceSensitivity(Integer deviceSensitivity) {
-		this.deviceSensitivity = deviceSensitivity;
-	}
+    public void setDeviceSensitivity(Integer deviceSensitivity) {
+        this.deviceSensitivity = deviceSensitivity;
+    }
 
-	public Integer getDeviceSignalStrength() {
-		return deviceSignalStrength;
-	}
+    public Integer getDeviceSignalStrength() {
+        return deviceSignalStrength;
+    }
 
-	public void setDeviceSignalStrength(Integer deviceSignalStrength) {
-		this.deviceSignalStrength = deviceSignalStrength;
-	}
+    public void setDeviceSignalStrength(Integer deviceSignalStrength) {
+        this.deviceSignalStrength = deviceSignalStrength;
+    }
 
-	public Integer getDeviceLinkQualityIndicator() {
-		return deviceLinkQualityIndicator;
-	}
+    public Integer getApplMode() {
+        return applMode;
+    }
 
-	public void setDeviceLinkQualityIndicator(Integer deviceLinkQualityIndicator) {
-		this.deviceLinkQualityIndicator = deviceLinkQualityIndicator;
-	}
+    public void setApplMode(Integer applMode) {
+        this.applMode = applMode;
+    }
 
-	public String getDevicePrimaryRouterId() {
-		return devicePrimaryRouterId;
-	}
+    public Integer getDeviceLinkQualityIndicator() {
+        return deviceLinkQualityIndicator;
+    }
 
-	public void setDevicePrimaryRouterId(String devicePrimaryRouterId) {
-		this.devicePrimaryRouterId = devicePrimaryRouterId;
-	}
+    public void setDeviceLinkQualityIndicator(Integer deviceLinkQualityIndicator) {
+        this.deviceLinkQualityIndicator = deviceLinkQualityIndicator;
+    }
 
-	public String getDeviceSecondryRouterId() {
-		return deviceSecondryRouterId;
-	}
+    public String getDevicePrimaryRouterId() {
+        return devicePrimaryRouterId;
+    }
 
-	public void setDeviceSecondryRouterId(String deviceSecondryRouterId) {
-		this.deviceSecondryRouterId = deviceSecondryRouterId;
-	}
+    public void setDevicePrimaryRouterId(String devicePrimaryRouterId) {
+        this.devicePrimaryRouterId = devicePrimaryRouterId;
+    }
 
-	public Integer getDeviceBattery() {
-		return deviceBattery;
-	}
+    public String getDeviceSecondryRouterId() {
+        return deviceSecondryRouterId;
+    }
 
-	public void setDeviceBattery(Integer deviceBattery) {
-		this.deviceBattery = deviceBattery;
-	}
-	
-	
-	
+    public void setDeviceSecondryRouterId(String deviceSecondryRouterId) {
+        this.deviceSecondryRouterId = deviceSecondryRouterId;
+    }
 
-	public Date getLastAlertTime() {
-		return lastAlertTime;
-	}
+    public Integer getDeviceBattery() {
+        return deviceBattery;
+    }
 
-	public void setLastAlertTime(Date lastAlertTime) {
-		this.lastAlertTime = lastAlertTime;
-	}
+    public void setDeviceBattery(Integer deviceBattery) {
+        this.deviceBattery = deviceBattery;
+    }
 
-	public String toString() {
+    public Date getLastAlertTime() {
+        return lastAlertTime;
+    }
 
-		return new ToStringBuilder(this)
-				.append("deviceId", deviceId)
-				.append("deviceType", deviceType)
-				.append("deviceStatus", deviceStatus)
-				.append("devicePhysicalAddress", devicePhysicalAddress)
-				.append("deviceSensitivity", deviceSensitivity)
-				.append("deviceLinkQualityIndicator",
-						deviceLinkQualityIndicator)
-				.append("deviceBattery", deviceBattery)
-				.append("deviceSignalStrength", deviceSignalStrength)
-				.append("networkId", networkId)
-				.append("deviceLocation", deviceLocation).toString();
-	}
+    public void setLastAlertTime(Date lastAlertTime) {
+        this.lastAlertTime = lastAlertTime;
+    }
 
-	public int hashCode() {
+    public String toString() {
 
-		return new HashCodeBuilder(31, 7).append(deviceId).append(deviceType)
-				.append(deviceStatus).append(devicePhysicalAddress)
-				.append(deviceLocation).append(deviceSensitivity)
-				.append(deviceLinkQualityIndicator).append(deviceBattery)
-				.append(deviceSignalStrength).append(networkId).toHashCode();
-	}
+        return new ToStringBuilder(this)
+                .append("deviceId", deviceId)
+                .append("deviceType", deviceType)
+                .append("deviceStatus", deviceStatus)
+                .append("devicePhysicalAddress", devicePhysicalAddress)
+                .append("deviceSensitivity", deviceSensitivity)
+                .append("deviceLinkQualityIndicator",
+                        deviceLinkQualityIndicator)
+                .append("deviceBattery", deviceBattery)
+                .append("deviceSignalStrength", deviceSignalStrength)
+                .append("networkId", networkId)
+                .append("deviceLocation", deviceLocation).toString();
+    }
 
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (obj.getClass() != getClass()) {
-			return false;
-		}
-		Device device = (Device) obj;
-		return new EqualsBuilder()
-				.appendSuper(super.equals(obj))
-				.append(deviceId, device.deviceId)
-				.append(deviceType, device.deviceType)
-				.append(deviceStatus, device.deviceStatus)
-				.append(devicePhysicalAddress, device.devicePhysicalAddress)
-				.append(deviceSensitivity, device.deviceSensitivity)
-				.append(deviceLinkQualityIndicator,
-						device.deviceLinkQualityIndicator)
-				.append(deviceBattery, device.deviceBattery)
-				.append(deviceSignalStrength, device.deviceSignalStrength)
-				.append(networkId, device.networkId)
-				.append(deviceLocation, device.deviceLocation).isEquals();
-	}
+    public int hashCode() {
+
+        return new HashCodeBuilder(31, 7).append(deviceId).append(deviceType)
+                .append(deviceStatus).append(devicePhysicalAddress)
+                .append(deviceLocation).append(deviceSensitivity)
+                .append(deviceLinkQualityIndicator).append(deviceBattery)
+                .append(deviceSignalStrength).append(networkId).toHashCode();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Device device = (Device) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(deviceId, device.deviceId)
+                .append(deviceType, device.deviceType)
+                .append(deviceStatus, device.deviceStatus)
+                .append(devicePhysicalAddress, device.devicePhysicalAddress)
+                .append(deviceSensitivity, device.deviceSensitivity)
+                .append(deviceLinkQualityIndicator,
+                        device.deviceLinkQualityIndicator)
+                .append(deviceBattery, device.deviceBattery)
+                .append(deviceSignalStrength, device.deviceSignalStrength)
+                .append(networkId, device.networkId)
+                .append(deviceLocation, device.deviceLocation).isEquals();
+    }
 
 }

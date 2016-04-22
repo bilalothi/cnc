@@ -415,6 +415,9 @@ var cncEvents = function () {
         else if (response == "failurePing") {
             displayMessage = "MEG is not connected. Please check the MEG is powered ON, or the cable connection with MEG is OK or entered IP address is valid IP address of MEG.";
         }
+        else if (response == "failureNoNetwork") {
+            displayMessage = "Device is not added. Please add Network first and then try again!";
+        }
         else if (status = "error") {
             displayMessage = "Error Executing AJAX Request: " + response.error;
         }
@@ -638,22 +641,24 @@ var cncEvents = function () {
             $("#deleteDeviceButton").click(
                     function (event) {
 
-                        var resultDiv = "#delete-device-result-div";
-                        var deleteDeviceId = $("#deviceIdDeleteTextField")
-                                .val();
-                        if (deleteDeviceId == "" || deleteDeviceId == " ") {
-                            displayEmptyFieldMessage(resultDiv, textfield);
-                        } else {
-                            var requestUrl = "/cnc/device/delete";
-                            var sendData = {
-                                deviceIdDeleteParam: deleteDeviceId
-                            };
-                            cncDisplay.ExecuteAjaxRequest(requestUrl, sendData,
-                                    requestTypeGet, receiveTypeText, function (
-                                            response, status, error) {
-                                        displayRequestResult(response, status,
-                                                resultDiv, deleteOperation);
-                                    });
+                        if (confirm('Are you sure you want to delete this device?')) {
+                            var resultDiv = "#delete-device-result-div";
+                            var deleteDeviceId = $("#deviceIdDeleteTextField")
+                                    .val();
+                            if (deleteDeviceId == "" || deleteDeviceId == " ") {
+                                displayEmptyFieldMessage(resultDiv, textfield);
+                            } else {
+                                var requestUrl = "/cnc/device/delete";
+                                var sendData = {
+                                    deviceIdDeleteParam: deleteDeviceId
+                                };
+                                cncDisplay.ExecuteAjaxRequest(requestUrl, sendData,
+                                        requestTypeGet, receiveTypeText, function (
+                                                response, status, error) {
+                                            displayRequestResult(response, status,
+                                                    resultDiv, deleteOperation);
+                                        });
+                            }
                         }
                     });
             $("#checkMegConnectionButton").click(
@@ -675,6 +680,26 @@ var cncEvents = function () {
                                                 resultDiv, deleteOperation);
                                     });
                         }
+                    });
+
+            $("#saveApplModeButton").click(
+                    function (event) {
+
+                        var resultDiv = "#appl-mode-result-div";
+                        var applMode = $("#applModeDropdown").val();
+                        alert(applMode);
+
+                        var requestUrl = "/cnc/applMode/saveApplMode";
+                        var sendData = {
+                            modeName: applMode
+                        };
+                        cncDisplay.ExecuteAjaxRequest(requestUrl, sendData,
+                                requestTypePost, receiveTypeText, function (
+                                        response, status, error) {
+                                    displayRequestResult(response, status,
+                                            resultDiv, saveOperation);
+                                });
+
                     });
             $("#searchNetworkButton").click(
                     function (event) {

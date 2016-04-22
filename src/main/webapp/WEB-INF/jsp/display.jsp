@@ -9,8 +9,8 @@
     <link rel="stylesheet" href='<c:url value="/resources/css/leaflet.css" />'>
     <link rel="stylesheet" href='<c:url value="/resources/css/leaflet.label.css" />'>
 
-
-    <script	src='<c:url value="/resources/js/leaflet.js" />'></script>
+    <%-- <script	src='<c:url value="/resources/js/leaflet.js" />'></script> --%>
+    <script	src='<c:url value="/resources/js/leaflet2.js" />'></script>
     <script	src='<c:url value="/resources/js/leaflet.label.js" />'></script>
 
 
@@ -34,14 +34,24 @@
 
 <body>
     <table width="100%" border="0" style="background-color: silver;"   cellspacing="0" cellpadding="0"  >
-        <tr  style="background: #6965C6; color:white;" > 
+<!--        <tr  style="background: #6965C6; color:white; background-image:url('<%=request.getContextPath()%>/resources/images/ugs_banner_full.png');"> -->
+
+        <tr  style="border-radius: 15px; padding: 10px 10px 10px 10px; background-color: 
+             #202020; border: 1px solid #ccc; margin: 0 auto; margin-top: 40px; 
+             margin-bottom: 40px; color: white; font-size: 14px; 
+             background-image:url('<%=request.getContextPath()%>/resources/images/ugs_banner_full.jpg');
+             " >
+
+
+
             <td width="10%" class="FR wow zoomIn animated" data-wow-delay="500ms">
-                <img src="<%=request.getContextPath()%>/resources/images/pak_army_logo.png" height="90" width="100" alt="Pak Army" >
+                <img src="<%=request.getContextPath()%>/resources/images/mcs_logo.png" height="95" width="100" alt="Pak Army" >
             </td>
             <td width="85%" height="100%" class="FR wow zoomIn animated" data-wow-delay="1300ms">
                 <table width="100%">
                     <tr valign="center"><td><font size="5" style="font-weight: bold; font-family: verdana;" >Unattended Ground Sensor</font></td></tr>
                     <tr valign="top"><td>&nbsp;<font style="font-weight: bold; font-family: verdana;" >Command and Control System</font></td></tr>
+                    <tr valign="top"><td>&nbsp;<font size='1' style="font-weight: bold; font-family: verdana;" >Military College of Signals Rawalpindi</font></td></tr>
                 </table>
 
             </td>
@@ -67,9 +77,9 @@
                     <tr>
                         <td>
                             <table width="100%" frame="box" style="border-color:red;" >
-                                <tr><td align="center">Last<font color="#6965C6">_</font>alert<font color="#6965C6">_</font>Device<font color="#6965C6">_</font>ID</td></tr>
+                                <tr><td align="center">Last<font color="#202020">_</font>alert<font color="#202020">_</font>Device<font color="#202020">_</font>ID</td></tr>
                                 <tr><td align="center">
-                                        <font size="5" style="font-weight: bold; font-family: verdana;" id="lastAlertDeviceId" style="font-weight: bold; font-family: verdana;" class="blinker">None</font>&nbsp;
+                                        <font size="5" style="font-weight: bold; font-family: verdana;" id="lastAlertDeviceId" class="blinker">None</font>&nbsp;
 
                                     </td></tr>
 
@@ -78,7 +88,7 @@
                         </td>
                         <td>
                             <table width="100%" frame="box" style="border-color:red;" >
-                                <tr><td align="center">Total<font color="#6965C6">_</font>no<font color="#6965C6">_</font>of<font color="#6965C6">_</font>Alerts</td></tr>
+                                <tr><td align="center">Total<font color="#202020">_</font>no<font color="#202020">_</font>of<font color="#202020">_</font>Alerts</td></tr>
                                 <tr><td align="center">
                                         <font id="noOfAlertsPending" size="5" style="font-weight: bold; font-family: verdana;" class="blinker">0</font>&nbsp;
 
@@ -135,6 +145,7 @@
 
 
                             <div id="device-list" style="z-index: 10000 !important;" class="FR wow bounceInRight animated" data-wow-duration="500ms">
+                                <label id="applMode" class="applModeLabel" title="To change the application mode go to Configuration -> Application Mode">Normal</label><br /> 
                                 <select name="deviceListDropdown2" id="deviceListDropdown2"
                                         class="devicelist" >
                                     <option value="">Select a device</option>
@@ -391,6 +402,7 @@
                                 <li><a href="#search-device-tab" style="outline: 0;"><span>Search Device</span></a></li>
                                 <li><a href="#delete-device-tab" style="outline: 0;"><span>Delete Device</span></a></li>
                                 <li><a href="#meg-connectivity-tab" style="outline: 0;"><span>MEG Connection</span></a></li>
+                                <li><a href="#appl-mode-tab" style="outline: 0;"><span>Application Mode</span></a></li>
                                 <!--<li><a href="#config-device-tab" style="outline: 0;"><span>Config Device</span></a></li>-->
                             </ul>
 
@@ -420,8 +432,7 @@
 
                             <div id="search-network-tab">
                                 <div id="search-network-div" class="search FR wow bounceInRight animated" data-wow-duration="500ms">
-                                    <br> <br>
-
+                                    <br> 
                                     <center>
                                         <input type="button" id="searchNetworkButton" value="Search Network" style="border-radius: 10px; font-weight: bold; width: 200px; height: 32px; cursor:pointer; background-color: silver;" />
                                     </center>
@@ -507,6 +518,24 @@
                                     <input type="button" id="checkMegConnectionButton" value="Check" style="width: 80px" />
                                 </div>
                                 <div id="check-meg-connection-result-div" class="result"></div>
+                            </div>
+
+                            <div id="appl-mode-tab" class="forms">
+                                <div id="appl-mode-div" class="search">
+                                    <br> <br>
+                                    <form id="applModeAddForm" method="post" class="forms">
+                                        <label for="applModeDropdown">Application Mode &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> 
+                                        <select id="applModeDropdown" name="applModeDropdown">
+                                            <option value="NIGHT">Night</option>
+                                            <option value="DAY">Day</option>
+                                            <option value="WIND">Wind</option>
+                                        </select>
+                                        <center>
+                                            <input type="button" id="saveApplModeButton" value="Save" />
+                                        </center>
+                                    </form>
+                                </div>
+                                <div id="appl-mode-result-div" class="result"></div>
                             </div>
                             <!--                            <div id="config-device-tab" class="forms">
                                                             <div id="device-config-div" class="box">
@@ -730,13 +759,13 @@
 
         <tr style="background: silver; color: black;"><td colspan="3" width="100%">
                 <div align="center">
-                    Coppyright&copy; 2016, All rights reserved by Military College of Signals
+                    Copyright&copy; 2016, All rights reserved by Military College of Signals
                 </div>
             </td>
         </tr>
         <tr style="background: silver; color: black;"><td colspan="3" width="100%">
                 <div align="center">
-                    <font size="1" >Developed by Capt Bilal</font> 
+                    <font size="1" >Developed by Capt Bilal Hassan (8006-34401)</font> 
                 </div>
             </td>
         </tr>

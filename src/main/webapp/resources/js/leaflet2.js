@@ -814,8 +814,19 @@
             return t.multiplyBy(i).subtract(e)
         }, 
         getTileUrl: function (t) {
-            return o.Util.template(this._url, o.extend({s: this._getSubdomain(t), z: t.z, x: t.x, y: t.y}, this.options))
-        }, _getWrapTileNum: function () {
+            return o.Util.template(this._url, o.extend({
+                s: this._getSubdomain(t),
+                z: t.z,
+                x: t.x,
+                y: t.y,
+                z0: 17-t.z,
+                x0: Math.floor(t.x/1024),
+                x1: Math.floor(t.x%1024),
+                y0: Math.floor(t.y/1024),
+                y1: Math.floor(t.y%1024)
+            }, this.options))
+        }
+        , _getWrapTileNum: function () {
             var t = this._map.options.crs, e = t.getSize(this._map.getZoom());
             return e.divideBy(this._getTileSize())._floor()
         }, _adjustTilePoint: function (t) {

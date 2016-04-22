@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ugs.cnc.dao.IMessageDao;
 import com.ugs.cnc.entities.Alert;
+import com.ugs.cnc.entities.ApplMode;
 import com.ugs.cnc.entities.Device;
 import com.ugs.cnc.entities.Location;
 import com.ugs.cnc.entities.Message;
@@ -61,6 +62,8 @@ public class MessageProcessingService {
     private IMessagingService messagingService;
     @Autowired
     private INetworkService networkService;
+    @Autowired
+    private IApplModeService applModeService;
 
     private static final String ALERT_MESSAGE = "Alert message received";
     private static final String LOW_BATTERY_MESSAGE = " -- Warning!!! Battery is low -- ";
@@ -126,6 +129,8 @@ public class MessageProcessingService {
 
         List<Network> listNetwork = networkService.getAllNetworks();
         Network network = null;
+
+        // Get Network 
         if (!listNetwork.isEmpty()) {
             network = listNetwork.get(0);
         }
@@ -155,7 +160,7 @@ public class MessageProcessingService {
             message.setMessageRawData(rawMessageContent);
 
             if (messageType == null) {
-			// If message type does not exist then mark the message type as
+                // If message type does not exist then mark the message type as
                 // INVALID
                 message.setMessageType(MessageType.INVALID.toString());
                 message.setMessageContent(finalMessage.append(INVALID_MESSAGE).append(messageType).toString());
@@ -167,78 +172,82 @@ public class MessageProcessingService {
              */
             else {
                 if (messageType.equals(MessageType.ALERT.getCode())) {
+                    // Check Alert Validity.. if Threshold and Pulse greater or equal to 
+                    // Application mode then show alert
+                    if (checkAlertValidityByThresholdAndPulse(rawMessage)) {
 
-                    message.setMessageContent(finalMessage.append(ALERT_MESSAGE).append(AT_DEVICE_MESSAGE).append(deviceId).toString());
-                    if (!deviceExists) {
-                        message.setMessageContent(finalMessage.append(WITH_DEVICE_MESSAGE).append(deviceId).append(DOES_NOT_EXIST_MESSAGE).append(DISCARD_MESSAGE).toString());
-                        message.setMessageType(MessageType.INVALID.toString());
-                    }
-
-                    // Device Exists
-                    else {
-                        processedPayload = rawMessageContent.split(delims);
-                        Alert alert = new Alert();
-                        alert.setAlertDeviceId(deviceId);
-                        alert.setFlag("True");
-                        alert.setAlertState(AlertState.ACTIVE.name());
-
-                        // Save Alert in Local Database 
-                        alertService.saveAlert(alert);
-
-                        // Save Device Alert Time and status if it is Off
-                        device.setLastAlertTime(new Date());
-                        device.setDeviceStatus("ON");
-                        deviceService.updateDevice(device);
-
-                        // Update Status of all other Devices
-                        lstInvactiveDevice = findInactiveSensors();
-                        for (Device device2 : lstInvactiveDevice) {
-                            System.out.println("Inactive Devices : " + device2.getDeviceId());
-                            device2.setDeviceStatus("OFF");
-                            device2.setDeviceBattery(0);
-                            deviceService.updateDevice(device2);
+                        message.setMessageContent(finalMessage.append(ALERT_MESSAGE).append(AT_DEVICE_MESSAGE).append(deviceId).toString());
+                        if (!deviceExists) {
+                            message.setMessageContent(finalMessage.append(WITH_DEVICE_MESSAGE).append(deviceId).append(DOES_NOT_EXIST_MESSAGE).append(DISCARD_MESSAGE).toString());
+                            message.setMessageType(MessageType.INVALID.toString());
                         }
 
-                        alertType = processedPayload[0];
-
-                        String explode = "";
-                        if (processedPayload.length > 1) {
-                            explode = processedPayload[1];
-                        }
-
-                        if (explode != null && !explode.equals("") && explode.equals("E")) {
-                            message.setExplode(true);
-                        }
+                        // Device Exists
                         else {
-                            message.setExplode(false);
-                        }
+                            processedPayload = rawMessageContent.split(delims);
+                            Alert alert = new Alert();
+                            alert.setAlertDeviceId(deviceId);
+                            alert.setFlag("True");
+                            alert.setAlertState(AlertState.ACTIVE.name());
 
-                        System.out.println("-------------------------------- Alert Type : " + alertType);
+                            // Save Alert in Local Database 
+                            alertService.saveAlert(alert);
 
-                        if (alertType.equals(AlertType.MOVEMENT1.getCode()) || alertType.equals(AlertType.MOVEMENT2.getCode()) || alertType.equals(AlertType.MOVEMENT3.getCode())) {
-                            message.setMessageContent(finalMessage.append(" -- Movement detected ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
-                        }
+                            // Save Device Alert Time and status if it is Off
+                            device.setLastAlertTime(new Date());
+                            device.setDeviceStatus("ON");
+                            deviceService.updateDevice(device);
 
-                        else {
-                            if (alertType.equals(AlertType.VIBRATION.getCode())
-                                    || alertType.equals(AlertType.VIBRATION1.getCode())) {
-                                message.setMessageContent(finalMessage.append(" -- Vibration detected ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
+                            // Update Status of all other Devices
+                            lstInvactiveDevice = findInactiveSensors();
+                            for (Device device2 : lstInvactiveDevice) {
+                                System.out.println("Inactive Devices : " + device2.getDeviceId());
+                                device2.setDeviceStatus("OFF");
+                                device2.setDeviceBattery(0);
+                                deviceService.updateDevice(device2);
+                            }
+
+                            alertType = processedPayload[0];
+
+                            String explode = "";
+                            if (processedPayload.length > 1) {
+                                explode = processedPayload[1];
+                            }
+
+                            if (explode != null && !explode.equals("") && explode.equals("E")) {
+                                message.setExplode(true);
+                            }
+                            else {
+                                message.setExplode(false);
+                            }
+
+                            System.out.println("-------------------------------- Alert Type : " + alertType);
+
+                            if (alertType.equals(AlertType.MOVEMENT1.getCode()) || alertType.equals(AlertType.MOVEMENT2.getCode()) || alertType.equals(AlertType.MOVEMENT3.getCode())) {
+                                message.setMessageContent(finalMessage.append(" -- Movement detected ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
                             }
 
                             else {
-                                if (alertType.equals(AlertType.VIDEO_DETECTION.getCode()) || alertType.equals(AlertType.VIDEO_DETECTION1.getCode())) {
-                                    message.setMessageContent(finalMessage.append(" -- Video detection ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
+                                if (alertType.equals(AlertType.VIBRATION.getCode())
+                                        || alertType.equals(AlertType.VIBRATION1.getCode())) {
+                                    message.setMessageContent(finalMessage.append(" -- Vibration detected ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
                                 }
 
                                 else {
-                                    if (alertType.equals(AlertType.MICROWAVE.getCode()) || alertType.equals(AlertType.MICROWAVE1.getCode())) {
-                                        message.setMessageContent(finalMessage.append(" -- Microwave detection ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
+                                    if (alertType.equals(AlertType.VIDEO_DETECTION.getCode()) || alertType.equals(AlertType.VIDEO_DETECTION1.getCode())) {
+                                        message.setMessageContent(finalMessage.append(" -- Video detection ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
                                     }
-                                    // Mark any other type of detection as invalid
+
                                     else {
-                                        System.out.println("Inside Else part of Message Conditions");
-                                        message.setMessageType(MessageType.INVALID.toString());
-                                        message.setMessageContent(finalMessage.append(INVALID_ALERT_MESSAGE).append(processedPayload[0]).toString());
+                                        if (alertType.equals(AlertType.MICROWAVE.getCode()) || alertType.equals(AlertType.MICROWAVE1.getCode())) {
+                                            message.setMessageContent(finalMessage.append(" -- Microwave detection ").append(AT_SENSOR_MESSAGE).append(deviceId).toString());
+                                        }
+                                        // Mark any other type of detection as invalid
+                                        else {
+                                            System.out.println("Inside Else part of Message Conditions");
+                                            message.setMessageType(MessageType.INVALID.toString());
+                                            message.setMessageContent(finalMessage.append(INVALID_ALERT_MESSAGE).append(processedPayload[0]).toString());
+                                        }
                                     }
                                 }
                             }
@@ -252,7 +261,7 @@ public class MessageProcessingService {
                  */
                 else {
                     if (messageType.equals(MessageType.LOCATION.getCode())) {
-			// Device location cannot be saved if the device, for which the
+                        // Device location cannot be saved if the device, for which the
                         // location has been received, does not exists in the database. Mark
                         // such a location message as invalid.
                         if (!deviceExists) {
@@ -270,7 +279,7 @@ public class MessageProcessingService {
                             Location deviceLocation = locationService.findByDeviceId(deviceId);
 
                             processedPayload = rawMessage.getPayload().split(delims);
-				// If location for a device already exists then update the new
+                            // If location for a device already exists then update the new
                             // location
                             if (deviceLocation != null) {
                                 deviceLocation.setlatitude(Double.parseDouble(processedPayload[0]));
@@ -291,7 +300,7 @@ public class MessageProcessingService {
                                     logger.warn("Location could not be updated in the database: {}", e);
                                 }
                             }
-				// Save the location for a device which previously had no
+                            // Save the location for a device which previously had no
                             // location stored for it
                             else {
                                 try {
@@ -325,7 +334,7 @@ public class MessageProcessingService {
                             statusType = rawMessageContent;
 
                             if (statusType.equals(StatusType.ON.getCode())) {
-				// If the device, for which the ON status has been received,
+                                // If the device, for which the ON status has been received,
                                 // does not
                                 // exist in the database then it means a new device has been
                                 // added to the network. Save the new device to the database by
@@ -355,7 +364,7 @@ public class MessageProcessingService {
                                     device.setDeviceStatus(StatusType.ON.toString());
                                     device.setLastAlertTime(new Date());
 
-					// If the device, for which the ON status has been received,
+                                    // If the device, for which the ON status has been received,
                                     // exist in the database then update the device status to
                                     // ON.
                                     try {
@@ -444,7 +453,7 @@ public class MessageProcessingService {
                          * MESSAGE
                          * *************************************************************
                          */
-		// Here is the Battery Code and we need to perform Calculation over
+                        // Here is the Battery Code and we need to perform Calculation over
                         // here.
                         else {
                             if (messageType.equals(MessageType.BATTERY.getCode())) {
@@ -476,7 +485,7 @@ public class MessageProcessingService {
 
                                     if (rawMessageContentDouble > 0) {
                                         double voltage = (rawMessageContentDouble * 5) / 4095;
-					// Max = 4
+                                        // Max = 4
                                         // Min = 3.6
                                         // 11:64:D:0084:B:3202
                                         System.out.println("Calculated Voltage : " + voltage);
@@ -597,7 +606,7 @@ public class MessageProcessingService {
                 }
             }
 
-		// Heartbeat is not used at this point but may be used in future
+            // Heartbeat is not used at this point but may be used in future
 		/*
              * else if
              * (messageType.equals(MessageType.HEARTBEAT.getMessageTypeCode())) { if
@@ -609,7 +618,7 @@ public class MessageProcessingService {
              */
             if (deviceExists) {
                 try {
-				// Save the message if the device exists in the DB from which
+                    // Save the message if the device exists in the DB from which
                     // the message has been received otherwise discard it
                     messagingService.saveMessage(message);
                 }
@@ -627,12 +636,70 @@ public class MessageProcessingService {
             }
             message.setInactiveDevices(invactiveDevicesMessage);
 
-		// Send message to clients connected through browsers after saving the
+            // Send message to clients connected through browsers after saving the
             // message to the DB or discarding it if the device does not exist from
             // which the message has been received
             messageProducerService.broadcastMessageToClients(message);
         }
 
+    }
+
+    /** 
+     * This function checks the Alert validity by comparing Threshold and Pulse from 
+     * message and Application mode values. <br /> 
+     * 
+     * If Threshold and Pulse in Message Payload are greater or equal to the values in 
+     * DB according to selected Application Mode then display Alert on C2I. 
+     * @param rawMessage
+     * @return 
+     */
+    public boolean checkAlertValidityByThresholdAndPulse(RawMessage rawMessage) {
+        boolean returnValue = false;
+        if (rawMessage != null) {
+            // Get C2I Device (for Application Mode) 
+            Device c2iDevice = deviceService.findByDeviceId("0");
+            if (c2iDevice != null && c2iDevice.getApplMode() != null) {
+                Integer applModeId = c2iDevice.getApplMode();
+                ApplMode applMode = applModeService.findById(applModeId);
+
+                if (applMode != null) {
+                    Integer applModethreshold = applMode.getThreshold();
+                    System.out.println("Application Mode Threshold : " + applModethreshold);
+                    
+                    Integer applModepulse = applMode.getPulse();
+                    System.out.println("Application Mode Pulse : " + applModepulse);
+                    
+                    String payLoad = rawMessage.getPayload();
+                    String[] payLoadArr = payLoad.split(" ");
+
+                    if (payLoadArr.length >= 4) {
+                        String messageThreshold = payLoadArr[1];
+                        System.out.println("Message Threshold : " + messageThreshold);
+                        
+                        String messagePulse = payLoadArr[5];
+                        System.out.println("Message Pulse : " + messagePulse);
+                        
+                        if( messageThreshold != null ) {
+                            Integer messageThresholdInt = Integer.parseInt(messageThreshold);
+                            Integer messagePulseInt = Integer.parseInt(messagePulse);
+                            
+                            // If Threshold and Pulse in Message is greater than Application Mode then 
+                            // display Alert on C2I
+                            if( messageThresholdInt >= applModethreshold && messagePulseInt >= applModepulse ) {
+                                returnValue = true; 
+                            }
+                            else {
+                                returnValue = false; 
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+        return returnValue;
     }
 
     /**
