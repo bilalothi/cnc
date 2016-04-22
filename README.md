@@ -1,0 +1,2 @@
+# cnc
+Command and Control 
